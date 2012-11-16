@@ -29,4 +29,19 @@ class Video extends ElggFile {
 		
 		return parent::delete();
 	}
+
+	/**
+	 * Return the data directory where the file is located
+	 *
+	 * @return string $path
+	 */
+	public function getFileDirectory() {
+		$filepath = $this->getFilenameOnFilestore();
+
+		$parts = explode("/", $filepath);
+		array_pop($parts);
+		$path = implode("/", $parts);
+
+		return $path;
+	}
 }
