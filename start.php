@@ -65,35 +65,45 @@ function videos_url_override($entity) {
  * Trigger the video conversion
  */
 function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
-	echo "<p>Checking for unconverted videos...</p>";
-
 	$videos = elgg_get_entities_from_metadata(array(
 		'type' => 'object',
 		'subtype' => 'video',
 		'limit' => 10,
-		/*
 		'metadata_name_value_pairs' => array(
-			'name' => 'converted',
+			'name' => 'conversion_done',
 			'value' => false
 		)
-		*/
 	));
+
+	$video_count = count($videos);
 
 	$formats = videos_get_formats();
 
 	foreach ($videos as $video) {
 		$format_errors = array();
+		$converted_formats = $video->getConvertedFormats();
 		foreach ($formats as $format) {
-			$input = $video->getFilenameOnFilestore();
-			$dir = $video->getFileDirectory();
-			$output = "$dir/$filename.$format";
-			$command = "ffmpeg -i $input -s 320x240 -ar 44100 -r 12 $output";
-			//$result = shell_exec($command);
 
-			echo "<p>$command</p>";
+			// Do not convert same format multiple times
+			if (in_array($format, $converted_formats)) {
+				continue;
+			}
+
+			$input = escapeshellarg($video->getFilenameOnFilestore());
+			$filename = $video->getFilenameWithoutExtension();
+			$dir = $video->getFileDirectory();
+			$output_file = "$dir/$filename.$format";
+			$output = escapeshellarg($output_file);
+			$command = "avconv -y -i $input -s 320x240 $output";
+			$result = shell_exec($command);
 
 			if ($result === '@todo"') {
 				$format_errors[] = $format;
+			}
+
+			if (file_exists($output_file)) {
+				$converted_formats[] = $format;
+				$video->setConvertedFormats($converted_formats);
 			}
 		}
 
@@ -103,9 +113,15 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			$error_string = elgg_echo('videos:admin:conversion_error', array($input, $format_errors));
 			elgg_add_admin_notice($error_string);
 		}
+
+		// Mark conversion done if all formats are found
+		$unconverted = array_diff($formats, $converted_formats);
+		if (empty($unconverted)) {
+			$video->conversion_done = true;
+		}
 	}
 
-	return $returnvalue . $resulttext;
+	return $returnvalue;
 }
 
 /**
