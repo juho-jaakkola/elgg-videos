@@ -26,8 +26,8 @@ $owner_link = elgg_view('output/url', array(
 ));
 $author_text = elgg_echo('byline', array($owner_link));
 
-//$video_icon = elgg_view_entity_icon($video, 'small');
-$video_icon = elgg_view_entity_icon($owner, 'small');
+$video_icon = elgg_view_entity_icon($video, 'small');
+//$video_icon = elgg_view_entity_icon($owner, 'small');
 
 $date = elgg_view_friendly_time($video->time_created);
 

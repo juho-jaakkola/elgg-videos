@@ -16,11 +16,14 @@ function videos_init () {
 	elgg_register_menu_item('site', $item);
 
 	elgg_register_entity_url_handler('object', 'video', 'videos_url_override');
-	//elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'videos_icon_url_override');
+	elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'videos_icon_url_override');
 
 	// Register cron hook
 	$period = elgg_get_plugin_setting('period', 'videos');
 	elgg_register_plugin_hook_handler('cron', $period, 'videos_conversion_cron');
+
+	// Register an icon handler for videos
+	elgg_register_page_handler('videothumb', 'videos_icon_handler');
 }
 
 function videos_page_handler ($page) {
@@ -82,8 +85,8 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 	foreach ($videos as $video) {
 		$format_errors = array();
 		$converted_formats = $video->getConvertedFormats();
-		foreach ($formats as $format) {
 
+		foreach ($formats as $format) {
 			// Do not convert same format multiple times
 			if (in_array($format, $converted_formats)) {
 				continue;
@@ -96,6 +99,7 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			$output = escapeshellarg($output_file);
 			$command = "avconv -y -i $input -s 320x240 $output";
 			$result = shell_exec($command);
+			//echo "<p>$command</p>";
 
 			if ($result === '@todo"') {
 				$format_errors[] = $format;
@@ -104,6 +108,36 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			if (file_exists($output_file)) {
 				$converted_formats[] = $format;
 				$video->setConvertedFormats($converted_formats);
+			}
+
+			$icon_sizes = elgg_get_config('icon_sizes');
+
+			$imagepath = "$dir/{$video->getGUID()}master.jpg";
+			$command = "avconv -i $input -ss 00:00:01 -f image2 -vcodec mjpeg -vframes 1 $imagepath";
+			//echo "<p>$command</p>";
+			shell_exec($command);
+
+			// get the images and save their file handlers into an array
+			// so we can do clean up if one fails.
+			$files = array();
+
+			// Create the thumbnails
+			foreach ($icon_sizes as $name => $size_info) {
+				// We already created master
+				if ($name == 'master') {
+					continue;
+				}
+
+				$resized = get_resized_image_from_existing_file($imagepath, $size_info['w'], $size_info['h']);
+
+				$file = new ElggFile();
+				$file->owner_guid = $video->owner_guid;
+				$file->container_guid = $video->getGUID();
+				$file->setFilename("video/{$video->getGUID()}{$name}.jpg");
+				$file->open('write');
+				$file->write($resized);
+				$file->close();
+				$files[] = $file;
 			}
 		}
 
@@ -119,6 +153,8 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 		if (empty($unconverted)) {
 			$video->conversion_done = true;
 		}
+
+		$video->icontime = time();
 	}
 
 	return $returnvalue;
@@ -131,5 +167,54 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
  */
 function videos_get_formats() {
 	$plugin = elgg_get_plugin_from_id('videos');
-	return $plugin->getMetadata('formats');
+	$formats = $plugin->getMetadata('formats');
+
+	if (is_array($formats)) {
+		return $formats;
+	} else {
+		return array($formats);
+	}
+}
+
+/**
+ * Override the default entity icon for videos
+ *
+ * @return string Relative URL
+ */
+function videos_icon_url_override($hook, $type, $returnvalue, $params) {
+	$video = $params['entity'];
+	$size = $params['size'];
+
+	if (!elgg_instanceof($video, 'object', 'video')) {
+		return $returnvalue;
+	}
+
+	$icontime = $video->icontime;
+
+	if ($icontime) {
+		return "videothumb/$video->guid/$size/$icontime.jpg";
+	}
+
+	// TODO Add default images
+	//return "mod/videos/graphics/default{$size}.gif";
+}
+
+/**
+ * Handle video thumbnails.
+ *
+ * @param array $page
+ * @return void
+ */
+function videos_icon_handler($page) {
+	if (isset($page[0])) {
+		set_input('video_guid', $page[0]);
+	}
+	if (isset($page[1])) {
+		set_input('size', $page[1]);
+	}
+
+	// Include the standard profile index
+	$plugin_dir = elgg_get_plugins_path();
+	include("$plugin_dir/videos/videothumb.php");
+	return true;
 }
