@@ -171,9 +171,9 @@ if ($new_video) {
 
 	$container = get_entity($container_guid);
 	if (elgg_instanceof($container, 'group')) {
-		forward("video/group/$container->guid/all");
+		forward("videos/group/$container->guid/all");
 	} else {
-		forward("video/owner/$container->username");
+		forward("videos/owner/$container->username");
 	}
 
 } else {
