@@ -128,7 +128,7 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 					continue;
 				}
 
-				$resized = get_resized_image_from_existing_file($imagepath, $size_info['w'], $size_info['h']);
+				$resized = get_resized_image_from_existing_file($imagepath, $size_info['w'], $size_info['h'], true);
 
 				$file = new ElggFile();
 				$file->owner_guid = $video->owner_guid;
