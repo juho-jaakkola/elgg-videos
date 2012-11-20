@@ -6,6 +6,7 @@ $lang = array(
 	'video:video' => 'Video',
 	'video:saved' => 'Video saved',
 	'video:download' => 'Download',
+	'video:user' => "%s's videos",
 	'video:' => '',
 
 	/**
