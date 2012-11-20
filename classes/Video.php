@@ -44,4 +44,44 @@ class Video extends ElggFile {
 
 		return $path;
 	}
+
+	/**
+	 * Return the file name without file extension
+	 * 
+	 * If file store name is "video/1352994519movie.mov"
+	 * then the result will be "1352994519movie"
+	 *
+	 * @return string $path
+	 */
+	public function getFilenameWithoutExtension () {
+		$filestorename = $this->getFilenameOnFilestore();
+		$path_parts = pathinfo($filestorename);
+		return $path_parts['filename'];
+	}
+
+	/**
+	 * Gets a list of converted formats
+	 *
+	 * @return array $unserialized Array of converted formats
+	 */
+	public function getConvertedFormats() {
+		$converted_formats = $this->getPrivateSetting('converted_formats');
+		if ($converted_formats) {
+			$unserialized = unserialize($converted_formats);
+			var_dump($unserialized); die;
+			return $unserialized;
+		} else {
+			return array();
+		}
+	}
+
+	/**
+	 * Sets a list of converted formats
+	 *
+	 * @return array Array of converted formats
+	 */
+	public function setConvertedFormats(array $converted_formats) {
+		$converted_formats = array_unique($converted_formats);
+		return $this->getPrivateSetting('converted_formats', serialize($converted_formats));
+	}
 }
