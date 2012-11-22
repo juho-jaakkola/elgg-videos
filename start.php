@@ -94,13 +94,30 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				continue;
 			}
 
-			$input = escapeshellarg($video->getFilenameOnFilestore());
+			//$input = escapeshellarg($video->getFilenameOnFilestore());
 			$filename = $video->getFilenameWithoutExtension();
 			$dir = $video->getFileDirectory();
 			$output_file = "$dir/$filename.$format";
-			$output = escapeshellarg($output_file);
-			$command = "avconv -y -i $input -s 320x240 $output";
-			$result = shell_exec($command);
+
+			try {
+				$converter = new VideoConverter();
+				$converter->setInputFile($video->getFilenameOnFilestore());
+				$converter->setOutputFile($output_file);
+				$converter->setOverwrite();
+				$converter->setFrameSize('320x240');
+				$result = $converter->convert();
+
+				if ($result) {
+					echo "<p>Successfully created video file $filename.$format</p>";
+				}
+			} catch (exception $e) {
+				// TODO
+				$e->getMessage();
+			}
+
+			//$output = escapeshellarg($output_file);
+			//$command = "avconv -y -i $input -s 320x240 $output";
+			//$result = shell_exec($command);
 			//echo "<p>$command</p>";
 
 			if ($result === '@todo"') {
