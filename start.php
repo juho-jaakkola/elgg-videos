@@ -8,15 +8,17 @@ function videos_init () {
 	$actionspath = elgg_get_plugins_path() . 'videos/actions/videos/';
 	elgg_register_action('videos/upload', $actionspath . 'upload.php');
 	elgg_register_action('videos/settings/save', $actionspath . 'settings/save.php', 'admin');
-	
+
 	elgg_register_page_handler('videos', 'videos_page_handler');
-	
+
 	// Site navigation
 	$item = new ElggMenuItem('videos', elgg_echo('videos'), 'videos/all');
 	elgg_register_menu_item('site', $item);
 
 	elgg_register_entity_url_handler('object', 'video', 'videos_url_override');
 	elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'videos_icon_url_override');
+
+	elgg_register_plugin_hook_handler('register', 'menu:entity', 'videos_entity_menu_setup');
 
 	// Register cron hook
 	$period = elgg_get_plugin_setting('period', 'videos');
@@ -217,4 +219,58 @@ function videos_icon_handler($page) {
 	$plugin_dir = elgg_get_plugins_path();
 	include("$plugin_dir/videos/videothumb.php");
 	return true;
+}
+
+/**
+ * Add links/info to entity menu
+ */
+function videos_entity_menu_setup($hook, $type, $return, $params) {
+	if (elgg_in_context('widgets')) {
+		return $return;
+	}
+
+	$entity = $params['entity'];
+	$handler = elgg_extract('handler', $params, false);
+	if ($handler != 'video') {
+		return $return;
+	}
+
+	$conversion_status = $entity->conversion_done;
+
+	// view different items depending on status of video conversion
+	if ($conversion_status) {
+		// video duration
+		$duration = $entity->getDuration();
+		$options = array(
+			'name' => 'length',
+			'text' => $duration,
+			'href' => false,
+			'priority' => 200,
+		);
+		$return[] = ElggMenuItem::factory($options);
+	} else {
+		// note that conversion is not finished
+		$options = array(
+			'name' => 'conversion_status',
+			'text' => elgg_echo("videos:conversion_pending"),
+			'href' => false,
+			'priority' => 100,
+		);
+		$return[] = ElggMenuItem::factory($options);
+	}
+
+	// admin links
+	/*
+	if (elgg_is_admin_logged_in()) {
+		$options = array(
+			'name' => 'manage',
+			'text' => elgg_echo('videos:manage'),
+			'href' => "admin/videos/manage?guid={$entity->getGUID()}",
+			'priority' => 300,
+		);
+		$return[] = ElggMenuItem::factory($options);
+	}
+	*/
+
+	return $return;
 }

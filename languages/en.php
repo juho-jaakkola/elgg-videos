@@ -7,6 +7,7 @@ $lang = array(
 	'video:saved' => 'Video saved',
 	'video:download' => 'Download',
 	'video:user' => "%s's videos",
+	'videos:conversion_pending' => 'Conversion pending',
 	'video:' => '',
 
 	/**
