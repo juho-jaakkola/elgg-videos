@@ -84,4 +84,29 @@ class Video extends ElggFile {
 		$converted_formats = array_unique($converted_formats);
 		return $this->getPrivateSetting('converted_formats', serialize($converted_formats));
 	}
+
+	/**
+	 * Gets the video duration in format HH:MM:SS
+	 * 
+	 * @return string
+	 */
+	public function getDuration() {
+		if ($this->duration) {
+			return $this->duration;
+		}
+
+		$file = escapeshellarg($this->getFilenameOnFilestore());
+
+		$command = "avconv -i $file 2>&1";
+
+		$fileinfo = shell_exec($command);
+
+		preg_match('/Duration: [0-9]{2}:[0-9]{2}:[0-9]{2}/', $fileinfo, $matches);
+		preg_match('/[0-9]{2}:[0-9]{2}:[0-9]{2}/', $matches[0], $matches);
+
+		$duration = $matches[0];
+
+		$this->duration = $duration;
+		return $duration;
+	}
 }
