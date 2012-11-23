@@ -7,6 +7,7 @@ function videos_init () {
 
 	$actionspath = elgg_get_plugins_path() . 'videos/actions/videos/';
 	elgg_register_action('videos/upload', $actionspath . 'upload.php');
+	elgg_register_action('video/delete', $actionspath . 'delete.php');
 	elgg_register_action('videos/settings/save', $actionspath . 'settings/save.php', 'admin');
 
 	elgg_register_page_handler('videos', 'videos_page_handler');
