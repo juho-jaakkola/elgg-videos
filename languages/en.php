@@ -10,6 +10,8 @@ $lang = array(
 	'videos:conversion_pending' => 'Conversion pending',
 	'video:' => '',
 
+	'item:object:video' => 'Videos',
+
 	/**
 	 * Cron intervals for video conversion
 	 */
