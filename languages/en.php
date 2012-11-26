@@ -6,6 +6,7 @@ $lang = array(
 	'video:video' => 'Video',
 	'video:none' => 'No videos.',
 	'video:saved' => 'Video saved',
+	'video:deleted' => 'Video was successfully deleted.',
 	'video:download' => 'Download',
 	'video:user' => "%s's videos",
 	'videos:conversion_pending' => 'Conversion pending',
