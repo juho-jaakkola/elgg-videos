@@ -5,14 +5,26 @@ $lang = array(
 	'videos:add' => 'Upload a video',
 	'video:video' => 'Video',
 	'video:none' => 'No videos.',
-	'video:saved' => 'Video saved',
-	'video:deleted' => 'Video was successfully deleted.',
 	'video:download' => 'Download',
 	'video:user' => "%s's videos",
 	'videos:conversion_pending' => 'Conversion pending',
 	'video:' => '',
 
 	'item:object:video' => 'Videos',
+
+	/**
+	 * System messages
+	 */
+	'video:saved' => 'Video saved',
+	'video:deleted' => 'Video was successfully deleted.',
+
+	/**
+	 * Error messages
+	 */
+	'video:noaccess' => "You do not have permissions to edit this video",
+	'video:cannotload' => "There was an error uploading the video",
+	'video:nofile' => "You must select a file",
+	'video:uploadfailed' => 'The video could not be saved.',
 
 	/**
 	 * Cron intervals for video conversion
