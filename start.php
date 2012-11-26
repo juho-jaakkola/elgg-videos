@@ -77,7 +77,7 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 		'limit' => 10,
 		'metadata_name_value_pairs' => array(
 			'name' => 'conversion_done',
-			'value' => false
+			'value' => 0,
 		)
 	));
 
@@ -109,17 +109,15 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				$converter->setFrameSize($framesize);
 				$result = $converter->convert();
 
+				$converted_formats[] = $format;
+				$video->setConvertedFormats($converted_formats);
+
 				echo "<p>Successfully created video file $filename.$format</p>";
 			} catch (exception $e) {
 				echo "<p>Failed to create video file $filename.$format</p>";
 				error_log($e->getMessage());
 
 				$format_errors[] = $format;
-			}
-
-			if (file_exists($output_file)) {
-				$converted_formats[] = $format;
-				$video->setConvertedFormats($converted_formats);
 			}
 
 			$icon_sizes = elgg_get_config('icon_sizes');
