@@ -68,7 +68,6 @@ class Video extends ElggFile {
 		$converted_formats = $this->getPrivateSetting('converted_formats');
 		if ($converted_formats) {
 			$unserialized = unserialize($converted_formats);
-			var_dump($unserialized); die;
 			return $unserialized;
 		} else {
 			return array();
@@ -82,7 +81,7 @@ class Video extends ElggFile {
 	 */
 	public function setConvertedFormats(array $converted_formats) {
 		$converted_formats = array_unique($converted_formats);
-		return $this->getPrivateSetting('converted_formats', serialize($converted_formats));
+		return $this->setPrivateSetting('converted_formats', serialize($converted_formats));
 	}
 
 	/**
