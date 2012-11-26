@@ -156,10 +156,13 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 // video saved so clear sticky form
 elgg_clear_sticky_form('video');
 
-
 // handle results differently for new videos and video updates
 if ($new_video) {
 	if ($guid) {
+		// Mark the video as unconverted so conversion script can find it
+		$video->conversion_done = false;
+		$video->save();
+
 		$message = elgg_echo("video:saved");
 		system_message($message);
 		add_to_river('river/object/video/create', 'create', elgg_get_logged_in_user_guid(), $video->guid);
