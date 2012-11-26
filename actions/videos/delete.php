@@ -18,6 +18,35 @@ if (!$video->canEdit()) {
 	forward($video->getURL());
 }
 
+// Delete all thumbnails from diskspace
+$icon_sizes = elgg_get_config('icon_sizes');
+foreach ($icon_sizes as $name => $size_info) {
+	$file = new ElggFile();
+	$file->owner_guid = $video->getOwnerGUID();
+	$file->setFilename("video/{$video->getGUID()}{$name}.jpg");
+	$filepath = $file->getFilenameOnFilestore();
+
+	if (!$file->delete()) {
+		elgg_log("Video thumbnail remove failed. Remove $filepath manually, please.", 'WARNING');
+	}
+}
+
+$filename = $video->getFilenameWithoutExtension();
+
+// Delete all formats of the video
+$formats = $video->getConvertedFormats();
+
+foreach ($formats as $format) {
+	$file = new ElggFile();
+	$file->owner_guid = $video->getOwnerGUID();
+	$file->setFilename("video/{$filename}.{$format}");
+	$filepath = $file->getFilenameOnFilestore();
+
+	if (!$file->delete()) {
+		elgg_log("Video removal failed. Remove $filepath manually, please.", 'WARNING');
+	}
+}
+
 $container = $video->getContainerEntity();
 
 if (!$video->delete()) {
@@ -27,7 +56,7 @@ if (!$video->delete()) {
 }
 
 if (elgg_instanceof($container, 'group')) {
-	forward("video/group/$container->guid/all");
+	forward("videos/group/$container->guid/all");
 } else {
-	forward("video/owner/$container->username");
+	forward("videos/owner/$container->username");
 }
