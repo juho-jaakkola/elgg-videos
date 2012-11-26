@@ -20,7 +20,8 @@ $lang = array(
 	'videos:hourly' => 'hour',
 	'videos:daily' => 'day',
 
-	'videos:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s',
+	'videos:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s. You may find more information in server error log.',
+	'videos:admin:thumbnail_error' => 'Failed to create thumbnail(s) %s for the video %s. You may find more information in server error log.',
 
 	'videos:setting:label:formats' => 'Convert videos to these formats',
 	'videos:setting:label:period' => 'Check for unconverted videos every',

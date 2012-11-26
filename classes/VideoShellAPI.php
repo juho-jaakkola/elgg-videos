@@ -1,62 +1,100 @@
 <?php
 
 class VideoShellAPI {
-	
-	protected $inputfile = '';
-	protected $outputfile = '';
+
+	protected $inputfile = null;
+	protected $outputfile = null;
 	protected $converter;
 	protected $global_options = array();
 	protected $infile_options = array();
-	
-	public function __construct () {
-		$acvonv_test = shell_exec('avconv 2>&1');
-		preg_match('/usage: avconv/', $acvonv_test, $matches);
+	protected $outfile_options = array();
 
-		if ($matches[0]) {
-			$this->converter = 'avconv';
-		} else {
+	public function __construct () {
+		$this->converter = 'avconv';
+		$acvonv_test = $this->execute();
+
+		// If avconv is not available fall back to ffmpeg
+		if (preg_match('/usage: avconv/', $acvonv_test) !== 1) {
+			$this->converter = 'ffmpeg';
 			$ffmpeg_test = shell_exec('ffmpeg 2>&1');
-			preg_match('/usage: ffmpeg/', $ffmpeg_test, $matches);
-			if ($matches[0]) {
-				$this->converter = 'ffmpeg';
-			} else {
+
+			// Neither was found
+			if (preg_match('/usage: ffmpeg/', $ffmpeg_test !== 1)) {
 				throw new Exception('VideoExceoption:ConverterNotFound');
 			}
 		}
 	}
 
-	public function exec () {
+	public function execute () {
+		$return = shell_exec($this->getCommand());
+
+		// If outputting a file check that it exists
+		if ($this->outputfile) {
+			if (!file_exists($this->outputfile)) {
+				throw new Exception('VideoException:FailedToCreateFile');
+			}
+		}
+
+		return $return;
+	}
+
+	public function getCommand () {
 		$global_options = $this->getGlobalOptionString();
+		$outputfile = $this->getOutputFile();
 		$infile_options = implode(' ', $this->infile_options);
 		$outfile_options = implode(' ', $this->outfile_options);
 
-		$command = "{$this->converter} $global_options $infile_options -i $this->inputfile $outfile_options $this->outputfile 2>&1";
-		return shell_exec($command);
+		$command = "{$this->converter} $global_options $infile_options $this->inputfile $outfile_options $outputfile 2>&1";
+
+		return $command;
 	}
-	
-	public function addGlobalOption ($option) {
+
+	protected function addGlobalOption ($option) {
 		$this->global_options[] = $option;
 	}
-	
-	public function addInfileOption ($option) {
+
+	protected function addInfileOption ($option) {
 		$this->infile_options[] = $option;
 	}
-	
-	public function addOutfileOption ($option) {
+
+	protected function addOutfileOption ($option) {
 		$this->outfile_options[] = $option;
 	}
-	
-	public function getGlobalOptionString () {
+
+	protected function getGlobalOptionString () {
 		if (empty($this->global_options)) {
 			return '';
 		} else {
 			$options = implode('', $this->global_options);
-			
 			return "-$options";
 		}
 	}
 
 	public function setInputfile ($inputfile) {
-		$this->inputfile = escapeshellarg($inputfile);
+		$inputfile = escapeshellarg($inputfile);
+		$this->inputfile = "-i $inputfile";
+	}
+
+	/**
+	 * Set path to output file
+	 * 
+	 * @param string $outputfile Path to the file
+	 */
+	public function setOutputFile ($outputfile) {
+		$this->outputfile = $outputfile;
+	}
+
+	public function setFormat ($format) {
+		$format = escapeshellarg($format);
+
+		$this->addOutfileOption("-f $format");
+	}
+
+	public function getOutputFile() {
+		if ($this->outputfile) {
+			return escapeshellarg($this->outputfile);
+		} else {
+			return null;
+		}
 	}
 }

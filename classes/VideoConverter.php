@@ -6,22 +6,13 @@ class VideoConverter extends VideoShellAPI {
 	 * Covert video with the given parameters
 	 */
 	public function convert () {
-		$result = $this->exec();
+		$result = $this->execute();
 		
 		if (preg_match('/Output #0/', $result) === 1) {
 			return true;
 		} else {
 			throw new Exception('VideoException:ConversionFailed');
 		}
-	}
-	
-	/**
-	 * Set path to output file
-	 * 
-	 * @param string $outputfile Path to the file
-	 */
-	public function setOutputFile ($outputfile) {
-		$this->outputfile = escapeshellarg($outputfile);
 	}
 	
 	/**

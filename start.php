@@ -86,7 +86,8 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 	$formats = videos_get_formats();
 
 	foreach ($videos as $video) {
-		$format_errors = array();
+		$conversion_errors = array();
+		$thumbnail_errors = array();
 		$converted_formats = $video->getConvertedFormats();
 
 		foreach ($formats as $format) {
@@ -95,7 +96,6 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				continue;
 			}
 
-			//$input = escapeshellarg($video->getFilenameOnFilestore());
 			$filename = $video->getFilenameWithoutExtension();
 			$dir = $video->getFileDirectory();
 			$output_file = "$dir/$filename.$format";
@@ -108,20 +108,11 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				$converter->setFrameSize('320x240');
 				$result = $converter->convert();
 
-				if ($result) {
-					echo "<p>Successfully created video file $filename.$format</p>";
-				}
+				echo "<p>Successfully created video file $filename.$format</p>";
 			} catch (exception $e) {
-				// TODO
-				$e->getMessage();
-			}
+				echo "<p>Failed to create video file $filename.$format</p>";
+				error_log($e->getMessage());
 
-			//$output = escapeshellarg($output_file);
-			//$command = "avconv -y -i $input -s 320x240 $output";
-			//$result = shell_exec($command);
-			//echo "<p>$command</p>";
-
-			if ($result === '@todo"') {
 				$format_errors[] = $format;
 			}
 
@@ -132,10 +123,24 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 
 			$icon_sizes = elgg_get_config('icon_sizes');
 
-			$imagepath = "$dir/{$video->getGUID()}master.jpg";
-			$command = "avconv -i $input -ss 00:00:01 -f image2 -vcodec mjpeg -vframes 1 $imagepath";
-			//echo "<p>$command</p>";
-			shell_exec($command);
+			// Use default thumbnail as master
+			$imagename = "{$video->getGUID()}master.jpg";
+			$imagepath = "$dir/$imagename";
+
+			try {
+				$thumbnailer = new VideoThumbnailer();
+				$thumbnailer->setInputFile($video->getFilenameOnFilestore());
+				$thumbnailer->setOutputFile($imagepath);
+				$thumbnailer->setPosition(1);
+				$result = $thumbnailer->execute();
+
+				echo "<p>Successfully created thumbnail $imagename</p>";
+			} catch (exception $e) {
+				echo "<p>Failed to create thumbnail $imagename</p>";
+				error_log($e->getMessage());
+
+				$thumbnail_errors[] = $imagename;
+			}
 
 			// get the images and save their file handlers into an array
 			// so we can do clean up if one fails.
@@ -143,28 +148,51 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 
 			// Create the thumbnails
 			foreach ($icon_sizes as $name => $size_info) {
-				// We already created master
+				// We have already created master image
 				if ($name == 'master') {
 					continue;
 				}
 
 				$resized = get_resized_image_from_existing_file($imagepath, $size_info['w'], $size_info['h'], true);
 
+				if (!$resized) {
+					echo "<p>Failed to create thumbnail $imagename</p>";
+					error_log($e->getMessage());
+					$thumbnail_errors[] = $imagename;
+
+					// TODO Should we revert the whole thumbnailing process if one image fails?
+					continue;
+				}
+
 				$file = new ElggFile();
 				$file->owner_guid = $video->owner_guid;
 				$file->container_guid = $video->getGUID();
 				$file->setFilename("video/{$video->getGUID()}{$name}.jpg");
 				$file->open('write');
-				$file->write($resized);
+				$result = $file->write($resized);
 				$file->close();
+
+				if ($result) {
+					echo "<p>Successfully created thumbnail {$file->getFilename()}</p>";
+				}
+
 				$files[] = $file;
 			}
 		}
 
-		if (!empty($format_errors)) {
-			$format_errors = implode(', ', $format_errors);
+		if (!empty($conversion_errors)) {
+			$conversion_errors = implode(', ', $conversion_errors);
 
-			$error_string = elgg_echo('videos:admin:conversion_error', array($input, $format_errors));
+			$error_string = elgg_echo('videos:admin:conversion_error', array($filename, $conversion_errors));
+			elgg_add_admin_notice($error_string);
+		}
+
+		if (empty($thumbnail_errors)) {
+			$video->icontime = time();
+		} else {
+			$thumbnail_errors = implode(', ', $thumbnail_errors);
+
+			$error_string = elgg_echo('videos:admin:thumbnail_error', array($thumbnail_errors, $filename));
 			elgg_add_admin_notice($error_string);
 		}
 
@@ -173,8 +201,6 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 		if (empty($unconverted)) {
 			$video->conversion_done = true;
 		}
-
-		$video->icontime = time();
 	}
 
 	return $returnvalue;
