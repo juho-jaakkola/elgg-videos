@@ -25,7 +25,9 @@ $lang = array(
 	'videos:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s. You may find more information in server error log.',
 	'videos:admin:thumbnail_error' => 'Failed to create thumbnail(s) %s for the video %s. You may find more information in server error log.',
 
+	'videos:setting:instructions' => 'Note that these settings only affect the content created in the future.',
 	'videos:setting:label:formats' => 'Convert videos to these formats',
+	'videos:setting:label:framesize' => 'Video frame size (resolution)',
 	'videos:setting:label:period' => 'Check for unconverted videos every',
 );
 

@@ -84,6 +84,7 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 	$video_count = count($videos);
 
 	$formats = videos_get_formats();
+	$framesize = elgg_get_plugin_setting('framesize', 'videos');
 
 	foreach ($videos as $video) {
 		$conversion_errors = array();
@@ -105,7 +106,7 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				$converter->setInputFile($video->getFilenameOnFilestore());
 				$converter->setOutputFile($output_file);
 				$converter->setOverwrite();
-				$converter->setFrameSize('320x240');
+				$converter->setFrameSize($framesize);
 				$result = $converter->convert();
 
 				echo "<p>Successfully created video file $filename.$format</p>";

@@ -23,12 +23,16 @@ class VideoConverter extends VideoShellAPI {
 	}
 	
 	/**
-	 * Set frame size
+	 * Set frame size (in format "320x240")
 	 * 
-	 * @param string $size The resolution (for example 320x240)
+	 * If undefined or 0 the conversion uses the same frame size as the source
+	 * 
+	 * @param string $size The resolution
 	 */
 	public function setFrameSize ($size) {
-		$size = escapeshellarg($size);
-		$this->addOutfileOption("-s $size");
+		if (!empty($size)) {
+			$size = escapeshellarg($size);
+			$this->addOutfileOption("-s $size");
+		}
 	}
 }
