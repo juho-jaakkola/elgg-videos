@@ -27,7 +27,6 @@ $owner_link = elgg_view('output/url', array(
 $author_text = elgg_echo('byline', array($owner_link));
 
 $video_icon = elgg_view_entity_icon($video, 'small');
-//$video_icon = elgg_view_entity_icon($owner, 'small');
 
 $date = elgg_view_friendly_time($video->time_created);
 
@@ -89,7 +88,7 @@ if ($full && !elgg_in_context('gallery')) {
 	echo '<div class="video-gallery-item">';
 	echo "<h3>" . $video->title . "</h3>";
 	echo elgg_view_entity_icon($video, 'medium');
-	echo "<p class='subtitle'>$owner_link $date</p>";
+	echo "<p class='subtitle'>$owner_link<br />$date</p>";
 	echo '</div>';
 } else {
 	// brief view

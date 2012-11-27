@@ -10,6 +10,9 @@ function videos_init () {
 	elgg_register_action('video/delete', $actionspath . 'delete.php');
 	elgg_register_action('videos/settings/save', $actionspath . 'settings/save.php', 'admin');
 
+	// add to the main css
+	elgg_extend_view('css/elgg', 'videos/css');
+
 	elgg_register_page_handler('videos', 'videos_page_handler');
 
 	// Site navigation
