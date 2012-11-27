@@ -11,6 +11,8 @@ $lang = array(
 	'video:' => '',
 
 	'item:object:video' => 'Videos',
+	'videos:list:list' => 'Switch to the list view',
+	'videos:list:gallery' => 'Switch to the gallery view',
 
 	/**
 	 * System messages
