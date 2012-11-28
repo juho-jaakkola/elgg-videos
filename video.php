@@ -18,19 +18,13 @@ if (!$video || $video->getSubtype() != "video" || !$format) {
 	exit;
 }
 
-$name = "video/{$video->time_created}movie.$format";
+$filepath = $video->getFilenameOnFilestoreWithoutExtension();
+$file = "$filepath.$format";
 
-$readvideo = new Video();
-$readvideo->owner_guid = $video->owner_guid;
-$readvideo->setFilename($name);
-$mime = $video->getMimeType();
-$contents = $readvideo->grabFile();
-
-header("Content-type: $mime");
-header('Expires: ' . date('r',time() + 864000));
+ob_clean();
+header("Content-type: video/$format");
 header("Pragma: public", true);
 header("Cache-Control: public", true);
-header("Content-Length: " . strlen($contents));
-
-echo $contents;
+header("Content-Length: " . filesize($file));
+readfile($file);
 exit;
