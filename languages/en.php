@@ -8,6 +8,7 @@ $lang = array(
 	'video:download' => 'Download',
 	'video:user' => "%s's videos",
 	'videos:conversion_pending' => 'Conversion pending',
+	'videos:nosupport' => 'Your browser does not support HTML5 video tag',
 	'video:' => '',
 
 	'item:object:video' => 'Videos',
@@ -44,6 +45,7 @@ $lang = array(
 	'videos:setting:instructions' => 'Note that these settings only affect the content created in the future.',
 	'videos:setting:label:formats' => 'Convert videos to these formats',
 	'videos:setting:label:framesize' => 'Video frame size (resolution)',
+	'videos:setting:label:video_width' => 'Video player width as pixels (leave empty to view as 100%)',
 	'videos:setting:label:period' => 'Check for unconverted videos every',
 );
 
