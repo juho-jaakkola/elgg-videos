@@ -107,47 +107,6 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 	move_uploaded_file($_FILES['upload']['tmp_name'], $video->getFilenameOnFilestore());
 
 	$guid = $video->save();
-
-	// if image, we need to create thumbnails (this should be moved into a function)
-	/*
-	if ($guid && $video->simpletype == "image") {
-		$video->icontime = time();
-		
-		$thumbnail = get_resized_image_from_existing_video($video->getFilenameOnFilestore(), 60, 60, true);
-		if ($thumbnail) {
-			$thumb = new ElggFile();
-			$thumb->setMimeType($_FILES['upload']['type']);
-
-			$thumb->setFilename($prefix."thumb".$videostorename);
-			$thumb->open("write");
-			$thumb->write($thumbnail);
-			$thumb->close();
-
-			$video->thumbnail = $prefix."thumb".$videostorename;
-			unset($thumbnail);
-		}
-
-		$thumbsmall = get_resized_image_from_existing_video($video->getFilenameOnFilestore(), 153, 153, true);
-		if ($thumbsmall) {
-			$thumb->setFilename($prefix."smallthumb".$videostorename);
-			$thumb->open("write");
-			$thumb->write($thumbsmall);
-			$thumb->close();
-			$video->smallthumb = $prefix."smallthumb".$videostorename;
-			unset($thumbsmall);
-		}
-
-		$thumblarge = get_resized_image_from_existing_video($video->getFilenameOnFilestore(), 600, 600, false);
-		if ($thumblarge) {
-			$thumb->setFilename($prefix."largethumb".$videostorename);
-			$thumb->open("write");
-			$thumb->write($thumblarge);
-			$thumb->close();
-			$video->largethumb = $prefix."largethumb".$videostorename;
-			unset($thumblarge);
-		}
-	}
-	*/
 } else {
 	// not saving a video but still need to save the entity to push attributes to database
 	$video->save();
