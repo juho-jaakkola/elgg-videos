@@ -59,6 +59,12 @@ class Video extends ElggFile {
 		return $path_parts['filename'];
 	}
 
+	public function getFilenameOnFilestoreWithoutExtension () {
+		$filestorename = $this->getFilenameOnFilestore();
+		$path_parts = pathinfo($filestorename);
+		return $path_parts['dirname'] . "/" . $path_parts['filename'];
+	}
+
 	/**
 	 * Gets a list of converted formats
 	 *
