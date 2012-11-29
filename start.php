@@ -119,8 +119,15 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 
 				echo "<p>Successfully created video file $filename.$format</p>";
 			} catch (exception $e) {
+				// Print simple error to screen
 				echo "<p>Failed to create video file $filename.$format</p>";
-				error_log($e->getMessage());
+
+				// Print detailed error to error log
+				$message = elgg_echo('VideoException:ConversionFailed',array(
+					$e->getMessage(),
+					$converter->getCommand()
+				));
+				error_log($message);
 
 				$format_errors[] = $format;
 			}

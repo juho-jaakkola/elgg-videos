@@ -4,6 +4,7 @@ class VideoShellAPI {
 
 	protected $inputfile = null;
 	protected $outputfile = null;
+	protected $result;
 	protected $converter;
 	protected $global_options = array();
 	protected $infile_options = array();
@@ -26,7 +27,7 @@ class VideoShellAPI {
 	}
 
 	public function execute () {
-		$return = shell_exec($this->getCommand());
+		$this->result = shell_exec($this->getCommand());
 
 		// If outputting a file check that it exists
 		if ($this->outputfile) {
@@ -35,7 +36,7 @@ class VideoShellAPI {
 			}
 		}
 
-		return $return;
+		return $this->result;
 	}
 
 	public function getCommand () {
@@ -96,5 +97,27 @@ class VideoShellAPI {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Get the error message printed to stderr
+	 * 
+	 * @return string $error_message
+	 */
+	public function getError() {
+		if (!$this->result) {
+			return null;
+		}
+
+		// Convert the message rows to an array
+		$parts = explode("\n", $this->result);
+
+		// Remove the last value which is white space
+		array_pop($parts);
+
+		// Possible error message should be the second last value
+		$error_message = array_pop($parts);
+
+		return $error_message;
 	}
 }

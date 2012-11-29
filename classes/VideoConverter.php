@@ -7,11 +7,11 @@ class VideoConverter extends VideoShellAPI {
 	 */
 	public function convert () {
 		$result = $this->execute();
-		
+
 		if (preg_match('/Output #0/', $result) === 1) {
 			return true;
 		} else {
-			throw new Exception('VideoException:ConversionFailed');
+			throw new Exception($this->getError());
 		}
 	}
 	

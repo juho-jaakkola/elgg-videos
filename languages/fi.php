@@ -47,6 +47,8 @@ $lang = array(
 	'videos:setting:label:framesize' => 'Video frame size (resolution)',
 	'videos:setting:label:video_width' => 'Video player width as pixels (leave empty to view as 100%)',
 	'videos:setting:label:period' => 'Check for unconverted videos every',
+
+	'VideoException:ConversionFailed' => 'ERROR: Video conversion failed. %s. Command: "%s"',
 );
 
 add_translation('fi', $lang);
