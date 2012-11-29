@@ -75,6 +75,10 @@ $video->container_guid = $container_guid;
 $tags = explode(",", $tags);
 $video->tags = $tags;
 
+// Save the entity to push attributes to database
+// and to get access to guid if adding a new video
+$video->save();
+
 // we have a video upload, so process it
 if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 
@@ -91,7 +95,7 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 		$videostorename = $video->getFilename();
 		$videostorename = elgg_substr($videostorename, elgg_strlen($prefix));
 	} else {
-		$videostorename = elgg_strtolower(time().$_FILES['upload']['name']);
+		$videostorename = elgg_strtolower($video->getGUID().$_FILES['upload']['name']);
 	}
 
 	$video->setFilename($prefix . $videostorename);
@@ -107,9 +111,6 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 	move_uploaded_file($_FILES['upload']['tmp_name'], $video->getFilenameOnFilestore());
 
 	$guid = $video->save();
-} else {
-	// not saving a video but still need to save the entity to push attributes to database
-	$video->save();
 }
 
 // video saved so clear sticky form
