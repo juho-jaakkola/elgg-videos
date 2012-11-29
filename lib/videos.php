@@ -162,13 +162,14 @@ function videos_get_page_contents_view ($guid = null) {
 	$content = elgg_view_entity($video, array('full_view' => true));
 	$content .= elgg_view_comments($video);
 	
+	/*
 	elgg_register_menu_item('title', array(
 		'name' => 'download',
 		'text' => elgg_echo('video:download'),
 		'href' => "video/download/$video->guid",
 		'link_class' => 'elgg-button elgg-button-action',
 	));
-	
+	*/
 	$params = array(
 		'content' => $content,
 		'title' => $title,
