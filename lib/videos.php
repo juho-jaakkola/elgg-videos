@@ -63,16 +63,28 @@ function videos_get_page_contents_list ($container = 0) {
 }
 
 function videos_get_page_contents_upload () {
+	$owner = elgg_get_page_owner_entity();
+
+	// set up breadcrumbs
+	if (elgg_instanceof($owner, 'user')) {
+		elgg_push_breadcrumb($owner->name, "videos/owner/$owner->username");
+	} else {
+		elgg_push_breadcrumb($owner->name, "videos/group/$owner->guid/all");
+	}
+
+	$title = elgg_echo('videos:add');
+	elgg_push_breadcrumb($title);
+
 	// Video upload form
 	$form_vars = array('enctype' => 'multipart/form-data');
 	$body_vars = videos_prepare_form_vars();
 	$form = elgg_view_form('videos/upload', $form_vars, $body_vars);
-	
+
 	$params = array(
-		'title' => elgg_echo('videos'),
+		'title' => $title,
 		'content' => $form,
 	);
-	
+
 	return $params;
 }
 
@@ -88,7 +100,6 @@ function videos_get_page_contents_owner () {
 		forward('videos/all');
 	}
 	
-	elgg_push_breadcrumb(elgg_echo('video'), "video/all");
 	elgg_push_breadcrumb($owner->name);
 	
 	elgg_register_title_button();
@@ -145,20 +156,18 @@ function videos_get_page_contents_view ($guid = null) {
 	}
 	
 	$owner = elgg_get_page_owner_entity();
-	
-	elgg_push_breadcrumb(elgg_echo('video'), 'video/all');
-	
+
 	$crumbs_title = $owner->name;
 	if (elgg_instanceof($owner, 'group')) {
-		elgg_push_breadcrumb($crumbs_title, "video/group/$owner->guid/all");
+		elgg_push_breadcrumb($crumbs_title, "videos/group/$owner->guid/all");
 	} else {
-		elgg_push_breadcrumb($crumbs_title, "video/owner/$owner->username");
+		elgg_push_breadcrumb($crumbs_title, "videos/owner/$owner->username");
 	}
-	
+
 	$title = $video->title;
-	
+
 	elgg_push_breadcrumb($title);
-	
+
 	if ($video->conversion_done) {
 		$content = elgg_view_entity($video, array('full_view' => true));
 		$content .= elgg_view_comments($video);
@@ -166,7 +175,7 @@ function videos_get_page_contents_view ($guid = null) {
 		$string = elgg_echo('videos:conversion_pending');
 		$content = "<div>$string</div>";
 	}
-	
+
 	/*
 	elgg_register_menu_item('title', array(
 		'name' => 'download',

@@ -34,7 +34,9 @@ function videos_init () {
 
 function videos_page_handler ($page) {
 	elgg_load_library('elgg:videos');
-	
+
+	elgg_push_breadcrumb(elgg_echo('videos'), 'videos/all');
+
 	switch ($page[0]) {
 		case 'view':
 			$params = videos_get_page_contents_view($page[1]);
@@ -54,7 +56,7 @@ function videos_page_handler ($page) {
 	}
 
 	$body = elgg_view_layout('content', $params);
-	
+
 	echo elgg_view_page($params['title'], $body);
 	return true;
 }
