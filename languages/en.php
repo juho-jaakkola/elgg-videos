@@ -7,7 +7,7 @@ $lang = array(
 	'video:none' => 'No videos.',
 	'video:download' => 'Download',
 	'video:user' => "%s's videos",
-	'videos:conversion_pending' => 'Conversion pending',
+	'videos:conversion_pending' => "This video hasn't been processed yet. Try again after few minutes.",
 	'videos:nosupport' => 'Your browser does not support HTML5 video tag',
 	'video:' => '',
 

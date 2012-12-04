@@ -7,7 +7,7 @@ $lang = array(
 	'video:none' => 'Ei videoita.',
 	'video:download' => 'Lataa',
 	'video:user' => "Käyttäjän %s videot",
-	'videos:conversion_pending' => 'Käsittely kesken',
+	'videos:conversion_pending' => "Tätä videota ei ole ehditty vielä käsitellä. Yritä hetken kuluttua uudelleen.",
 	'videos:nosupport' => 'Selaimesi ei tue HTML5 videotagia',
 	'video:' => '',
 
