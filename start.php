@@ -305,6 +305,7 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 		$return[] = ElggMenuItem::factory($options);
 	} else {
 		// note that conversion is not finished
+		/*
 		$options = array(
 			'name' => 'conversion_status',
 			'text' => elgg_echo("videos:conversion_pending"),
@@ -312,6 +313,7 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 			'priority' => 100,
 		);
 		$return[] = ElggMenuItem::factory($options);
+		*/
 	}
 
 	// admin links
