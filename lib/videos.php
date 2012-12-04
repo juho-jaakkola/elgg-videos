@@ -159,8 +159,13 @@ function videos_get_page_contents_view ($guid = null) {
 	
 	elgg_push_breadcrumb($title);
 	
-	$content = elgg_view_entity($video, array('full_view' => true));
-	$content .= elgg_view_comments($video);
+	if ($video->conversion_done) {
+		$content = elgg_view_entity($video, array('full_view' => true));
+		$content .= elgg_view_comments($video);
+	} else {
+		$string = elgg_echo('videos:conversion_pending');
+		$content = "<div>$string</div>";
+	}
 	
 	/*
 	elgg_register_menu_item('title', array(

@@ -58,32 +58,26 @@ if (elgg_in_context('widgets')) {
 }
 
 if ($full && !elgg_in_context('gallery')) {
-	if ($video->conversion_done) {
-		$player = elgg_view("videos/default", $vars);
+	$player = elgg_view("videos/default", $vars);
 
-		$params = array(
-			'entity' => $video,
-			'metadata' => $metadata,
-			'subtitle' => $subtitle,
-		);
-		$params = $params + $vars;
-		$summary = elgg_view('object/elements/summary', $params);
+	$params = array(
+		'entity' => $video,
+		'metadata' => $metadata,
+		'subtitle' => $subtitle,
+	);
+	$params = $params + $vars;
+	$summary = elgg_view('object/elements/summary', $params);
 
-		$text = elgg_view('output/longtext', array('value' => $video->description));
-		$body = "$text $player";
+	$text = elgg_view('output/longtext', array('value' => $video->description));
+	$body = "$text $player";
 
-		echo elgg_view('object/elements/full', array(
-			'entity' => $video,
-			'title' => false,
-			'icon' => $video_icon,
-			'summary' => $summary,
-			'body' => $body,
-		));
-	} else {
-		$string = elgg_echo('videos:conversion_pending');
-		echo "<div>$string</div>";
-	}
-
+	echo elgg_view('object/elements/full', array(
+		'entity' => $video,
+		'title' => false,
+		'icon' => $video_icon,
+		'summary' => $summary,
+		'body' => $body,
+	));
 } elseif (elgg_in_context('gallery')) {
 	echo '<div class="video-gallery-item">';
 	echo "<h3>" . $video->title . "</h3>";
