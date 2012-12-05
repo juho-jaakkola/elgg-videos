@@ -9,6 +9,7 @@ function videos_init () {
 	elgg_register_action('videos/upload', $actionspath . 'upload.php');
 	elgg_register_action('video/delete', $actionspath . 'delete.php');
 	elgg_register_action('videos/settings/save', $actionspath . 'settings/save.php', 'admin');
+	elgg_register_action('videos/convert', $actionspath . 'convert.php', 'admin');
 
 	// add to the main css
 	elgg_extend_view('css/elgg', 'videos/css');
@@ -30,6 +31,8 @@ function videos_init () {
 
 	// Register an icon handler for videos
 	elgg_register_page_handler('videothumb', 'videos_icon_handler');
+
+	elgg_register_admin_menu_item('administer', 'convert',  'videos');
 }
 
 function videos_page_handler ($page) {
@@ -319,17 +322,15 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 	}
 
 	// admin links
-	/*
 	if (elgg_is_admin_logged_in()) {
 		$options = array(
 			'name' => 'manage',
-			'text' => elgg_echo('videos:manage'),
-			'href' => "admin/videos/manage?guid={$entity->getGUID()}",
+			'text' => elgg_echo('videos:convert'),
+			'href' => "admin/videos/convert?guid={$entity->getGUID()}",
 			'priority' => 300,
 		);
 		$return[] = ElggMenuItem::factory($options);
 	}
-	*/
 
 	return $return;
 }

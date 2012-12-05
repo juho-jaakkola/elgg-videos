@@ -24,6 +24,7 @@ $lang = array(
 	/**
 	 * Error messages
 	 */
+	'video:notfound' => 'Videota ei löytynyt',
 	'video:noaccess' => "Sinulla ei ole oikeuksia tämän videon muokkaamiseen",
 	'video:cannotload' => "Videon lisäämisessä tapahtui virhe",
 	'video:nofile' => "Valitse lisäätävä tiedosto",
@@ -38,6 +39,15 @@ $lang = array(
 	'videos:halfhour' => 'half an hour',
 	'videos:hourly' => 'hour',
 	'videos:daily' => 'day',
+
+	/**
+	 * Admin features
+	 */
+	'admin:videos' => 'Videot',
+	'admin:videos:convert' => 'Konvertointi',
+	'videos:convert' => 'Konvertoi',
+	'videos:label:guid' => 'Konvertoitavan videon guid',
+	'videos:convert:success' => 'Video konvertoitu muotoihin: %s.',
 
 	'videos:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s. You may find more information in server error log.',
 	'videos:admin:thumbnail_error' => 'Failed to create thumbnail(s) %s for the video %s. You may find more information in server error log.',
