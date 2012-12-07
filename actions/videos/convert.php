@@ -19,6 +19,8 @@ if (empty($formats)) {
 $inputfile = $video->getFilenameOnFilestore();
 $filepath = $video->getFilenameOnFilestoreWithoutExtension();
 
+$format_errors = array();
+$format_success = array();
 foreach ($formats as $format) {
 	$outputfile = "$filepath.$format"; 
 
@@ -28,17 +30,26 @@ foreach ($formats as $format) {
 		$converter->setOutputfile($outputfile);
 		$converter->setFrameSize($framesize);
 		$converter->setOverwrite();
-		$converter->execute();
+		$converter->convert();
 
-		// TODO Check that the file exists and add the
-		// format using $video->setConvertedFormats()
+		if (file_exists($outputfile) && filesize($outputfile) > 0) {
+			$format_success[] = $format;
+			$video->addConvertedFormat($format);
+		} else {
+			$format_errors[] = $format;
+		}
 	} catch (exception $e) {
 		register_error($e->getMessage());
 		forward(REFERER);
 	}
 }
 
-system_message(elgg_echo('videos:convert:success', array(implode(', ', $formats))));
+if (!empty($format_erros)) {
+	$format_errors = implode(', ', $format_errors);
+	register_error(elgg_echo('videos:admin:conversion_error', array($video->title, $format_errors)));
+}
+
+system_message(elgg_echo('videos:convert:success', array(implode(', ', $format_success))));
 forward("admin/videos/convert?guid=$guid");
 
 
