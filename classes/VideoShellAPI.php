@@ -82,6 +82,14 @@ class VideoShellAPI {
 	 * @param string $outputfile Path to the file
 	 */
 	public function setOutputFile ($outputfile) {
+		// Hack to force some extra options for mp4 format
+		// TODO Find a better way to add this, also should probably
+		// first check whether this is needed in the first place
+		$pathinfo = pathinfo($outputfile);
+		if ($pathinfo['extension'] == 'mp4') {
+			$this->addOutfileOption('-strict experimental -acodec aac');
+		}
+
 		$this->outputfile = $outputfile;
 	}
 
