@@ -3,7 +3,7 @@
 class VideoConverter extends VideoShellAPI {
 	
 	/**
-	 * Covert video with the given parameters
+	 * Convert video with the given parameters
 	 */
 	public function convert () {
 		$result = $this->execute();
