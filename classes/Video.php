@@ -91,6 +91,24 @@ class Video extends ElggFile {
 	}
 
 	/**
+	 * Add a new converted format.
+	 * 
+	 * @param string $format
+	 * @return boolean
+	 */
+	public function addConvertedFormat($format) {
+		$setting = $this->getPrivateSetting('converted_formats');
+		if ($setting) {
+			$formats = unserialize($setting);
+			$formats[] = $format;
+		} else {
+			$formats = array($format);
+		}
+
+		return $this->setPrivateSetting('converted_formats', serialize($formats));
+	}
+
+	/**
 	 * Gets the video duration in format HH:MM:SS
 	 * 
 	 * @return string
