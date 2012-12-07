@@ -363,3 +363,20 @@ function videos_register_toggle() {
 		'priority' => 1000,
 	));
 }
+
+/**
+ * Return associative array of available video frame sizes.
+ * 
+ * @return array
+ */
+function videos_get_framesize_options() {
+	// TODO Get all the supported formats straight from the converter?
+	return array(
+		'0' => 'same as source',
+		'320x240' => '320x240 (qvga)',
+		'640x480' => '640x480 (vga)',
+		'852x480' => '852x480 (hd480)',
+		'1280x720' => '1280x720 (hd720)',
+		'1920x1080' => '1920x1080 (hd1080)',
+	);
+}

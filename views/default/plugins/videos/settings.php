@@ -18,15 +18,7 @@ $formats_input = elgg_view('input/checkboxes', array(
 $framesize_label = elgg_echo('videos:setting:label:framesize');
 $framesize_input = elgg_view('input/dropdown', array(
 	'name' => 'params[framesize]',
-	// TODO Get all the supported formats straight from the converter?
-	'options_values' => array(
-		'0' => 'same as source',
-		'320x240' => '320x240 (qvga)',
-		'640x480' => '640x480 (vga)',
-		'852x480' => '852x480 (hd480)',
-		'1280x720' => '1280x720 (hd720)',
-		'1920x1080' => '1920x1080 (hd1080)',
-	),
+	'options_values' => videos_get_framesize_options(),
 	'value' => $vars['entity']->framesize,
 ));
 
