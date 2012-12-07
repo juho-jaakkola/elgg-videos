@@ -24,7 +24,7 @@ $lang = array(
 	/**
 	 * Error messages
 	 */
-	'video:notfound' => 'Videota ei löytynyt',
+	'video:notfound' => 'Video was not found',
 	'video:noaccess' => "You do not have permissions to edit this video",
 	'video:cannotload' => "There was an error uploading the video",
 	'video:nofile' => "You must select a file",
@@ -44,8 +44,14 @@ $lang = array(
 	 * Admin features
 	 */
 	'admin:videos' => 'Videos',
+	'admin:videos:view' => 'Manage',
 	'admin:videos:convert' => 'Convert',
+	'videos:manage' => 'Manage',
 	'videos:convert' => 'Convert',
+	'videos:reconvert' => 'Reconvert',
+	'videos:formats' => 'Formats',
+	'videos:format' => 'Format',
+	'videos:size' => 'Size',
 	'videos:label:guid' => 'Guid of the video',
 	'videos:convert:success' => 'Video was successfully converted to formats: %s.',
 

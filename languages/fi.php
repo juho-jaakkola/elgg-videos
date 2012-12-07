@@ -44,8 +44,14 @@ $lang = array(
 	 * Admin features
 	 */
 	'admin:videos' => 'Videot',
+	'admin:videos:view' => 'Hallinta',
 	'admin:videos:convert' => 'Konvertointi',
+	'videos:manage' => 'Hallinta',
 	'videos:convert' => 'Konvertoi',
+	'videos:reconvert' => 'Uudelleenkonvertoi',
+	'videos:formats' => 'Formaatit',
+	'videos:format' => 'Formaatti',
+	'videos:size' => 'Koko',
 	'videos:label:guid' => 'Konvertoitavan videon guid',
 	'videos:convert:success' => 'Video konvertoitu muotoihin: %s.',
 

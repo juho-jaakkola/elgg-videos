@@ -325,8 +325,8 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 	if (elgg_is_admin_logged_in()) {
 		$options = array(
 			'name' => 'manage',
-			'text' => elgg_echo('videos:convert'),
-			'href' => "admin/videos/convert?guid={$entity->getGUID()}",
+			'text' => elgg_echo('videos:manage'),
+			'href' => "admin/videos/view?guid={$entity->getGUID()}",
 			'priority' => 300,
 		);
 		$return[] = ElggMenuItem::factory($options);
