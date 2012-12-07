@@ -10,6 +10,7 @@ function videos_init () {
 	elgg_register_action('video/delete', $actionspath . 'delete.php');
 	elgg_register_action('videos/settings/save', $actionspath . 'settings/save.php', 'admin');
 	elgg_register_action('videos/convert', $actionspath . 'convert.php', 'admin');
+	elgg_register_action('videos/delete_format', $actionspath . 'delete_format.php', 'admin');
 
 	// add to the main css
 	elgg_extend_view('css/elgg', 'videos/css');
