@@ -14,20 +14,40 @@ class Video extends ElggFile {
 		parent::__construct($guid);
 	}
 
+	/**
+	 * Delete all formats of the video
+	 */
 	public function delete() {
-		/*
-		$thumbnails = array($this->thumbnail, $this->smallthumb, $this->largethumb);
-		foreach ($thumbnails as $thumbnail) {
-			if ($thumbnail) {
-				$delvideo = new ElggFile();
-				$delvideo->owner_guid = $this->owner_guid;
-				$delvideo->setFilename($thumbnail);
-				$delvideo->delete();
-			}
+		$formats = $this->getConvertedFormats();
+
+		foreach ($formats as $format) {
+			$this->deleteFormat($format);
 		}
-		*/
-		
+
 		return parent::delete();
+	}
+
+	/**
+	 * Delete a single format of the video
+	 */
+	public function deleteFormat($format) {
+		$filename = $this->getFilenameWithoutExtension();
+
+		$file = new ElggFile();
+		$file->owner_guid = $this->getOwnerGUID();
+		$file->setFilename("video/{$filename}.{$format}");
+		$filepath = $file->getFilenameOnFilestore();
+
+		// These files are not represented by entities so remove manually
+		if (file_exists($filepath)) {
+			if (unlink($filepath)) {
+				$this->removeConvertedFormat($format);
+				return true;
+			}
+		} else {
+			elgg_log("Video removal failed. Remove $filepath manually, please.", 'WARNING');
+			return true;
+		}
 	}
 
 	/**
@@ -108,6 +128,29 @@ class Video extends ElggFile {
 		$formats = array_unique($formats);
 
 		return $this->setPrivateSetting('converted_formats', serialize($formats));
+	}
+
+	/**
+	 * Remove one of the converted formats
+	 * 
+	 * @param string $format
+	 * @return boolean
+	 */
+	public function removeConvertedFormat($format) {
+		$setting = $this->getPrivateSetting('converted_formats');
+		$formats = unserialize($setting);
+
+		foreach ($formats as $key => $value) {
+			if ($format === $value) {
+				unset($formats[$key]);
+			}
+		}
+
+		if (empty($formats)) {
+			$this->removePrivateSetting('converted_formats');
+		} else {
+			return $this->setPrivateSetting('converted_formats', serialize($formats));
+		}
 	}
 
 	/**

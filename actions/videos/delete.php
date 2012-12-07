@@ -31,22 +31,6 @@ foreach ($icon_sizes as $name => $size_info) {
 	}
 }
 
-$filename = $video->getFilenameWithoutExtension();
-
-// Delete all formats of the video
-$formats = $video->getConvertedFormats();
-
-foreach ($formats as $format) {
-	$file = new ElggFile();
-	$file->owner_guid = $video->getOwnerGUID();
-	$file->setFilename("video/{$filename}.{$format}");
-	$filepath = $file->getFilenameOnFilestore();
-
-	if (!$file->delete()) {
-		elgg_log("Video removal failed. Remove $filepath manually, please.", 'WARNING');
-	}
-}
-
 $container = $video->getContainerEntity();
 
 if (!$video->delete()) {
