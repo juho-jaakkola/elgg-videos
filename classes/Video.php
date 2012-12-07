@@ -105,6 +105,8 @@ class Video extends ElggFile {
 			$formats = array($format);
 		}
 
+		$formats = array_unique($formats);
+
 		return $this->setPrivateSetting('converted_formats', serialize($formats));
 	}
 
