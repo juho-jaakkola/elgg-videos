@@ -7,12 +7,12 @@ $framesize = get_input('framesize');
 $video = get_entity($guid);
 
 if (!elgg_instanceof($video, 'object', 'video')) {
-	register_error(elgg_echo('videos:notfound'));
+	register_error(elgg_echo('video:notfound'));
 	forward(REFERER);
 }
 
 if (empty($formats)) {
-	register_error(elgg_echo('videos:noformats'));
+	register_error(elgg_echo('video:noformats'));
 	forward(REFERER);
 }
 
@@ -46,11 +46,11 @@ foreach ($formats as $format) {
 
 if (!empty($format_erros)) {
 	$format_errors = implode(', ', $format_errors);
-	register_error(elgg_echo('videos:admin:conversion_error', array($video->title, $format_errors)));
+	register_error(elgg_echo('video:admin:conversion_error', array($video->title, $format_errors)));
 }
 
-system_message(elgg_echo('videos:convert:success', array(implode(', ', $format_success))));
-forward("admin/videos/convert?guid=$guid");
+system_message(elgg_echo('video:convert:success', array(implode(', ', $format_success))));
+forward("admin/video/convert?guid=$guid");
 
 
 

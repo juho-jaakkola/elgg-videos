@@ -40,7 +40,7 @@ if (!$video->delete()) {
 }
 
 if (elgg_instanceof($container, 'group')) {
-	forward("videos/group/$container->guid/all");
+	forward("video/group/$container->guid/all");
 } else {
-	forward("videos/owner/$container->username");
+	forward("video/owner/$container->username");
 }

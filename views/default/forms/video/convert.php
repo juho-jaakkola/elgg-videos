@@ -2,14 +2,14 @@
 
 $guid = isset($vars['guid']) ? $vars['guid'] : null;
 
-$guid_label = elgg_echo('videos:label:guid');
+$guid_label = elgg_echo('video:label:guid');
 $guid_input = elgg_view('input/text', array(
 	'name' => 'guid',
 	'value' => $guid,
 	'style' => 'width: 10%;'
 ));
 
-$formats_label = elgg_echo('videos:setting:label:formats');
+$formats_label = elgg_echo('video:setting:label:formats');
 $formats_input = elgg_view('input/checkboxes', array(
 	'name' => 'formats',
 	'options' => array(
@@ -20,10 +20,10 @@ $formats_input = elgg_view('input/checkboxes', array(
 	'value' => $formats,
 ));
 
-$framesize_label = elgg_echo('videos:setting:label:framesize');
+$framesize_label = elgg_echo('video:setting:label:framesize');
 $framesize_input = elgg_view('input/dropdown', array(
 	'name' => 'framesize',
-	'options_values' => videos_get_framesize_options(),
+	'options_values' => video_get_framesize_options(),
 	'value' => $vars['entity']->framesize,
 ));
 

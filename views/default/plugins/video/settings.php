@@ -1,10 +1,10 @@
 <?php
 
-$instructions = elgg_echo('videos:setting:instructions');
+$instructions = elgg_echo('video:setting:instructions');
 
 $formats = $vars['entity']->getMetadata('formats');
 
-$formats_label = elgg_echo('videos:setting:label:formats');
+$formats_label = elgg_echo('video:setting:label:formats');
 $formats_input = elgg_view('input/checkboxes', array(
 	'name' => 'params[formats]',
 	'options' => array(
@@ -15,29 +15,29 @@ $formats_input = elgg_view('input/checkboxes', array(
 	'value' => $formats,
 ));
 
-$framesize_label = elgg_echo('videos:setting:label:framesize');
+$framesize_label = elgg_echo('video:setting:label:framesize');
 $framesize_input = elgg_view('input/dropdown', array(
 	'name' => 'params[framesize]',
-	'options_values' => videos_get_framesize_options(),
+	'options_values' => video_get_framesize_options(),
 	'value' => $vars['entity']->framesize,
 ));
 
-$video_width_label = elgg_echo('videos:setting:label:video_width');
+$video_width_label = elgg_echo('video:setting:label:video_width');
 $video_width_input = elgg_view('input/text', array(
 	'name' => 'params[video_width]',
 	'value' => $vars['entity']->video_width,
 ));
 
-$period_label = elgg_echo('videos:setting:label:period');
+$period_label = elgg_echo('video:setting:label:period');
 $period_input = elgg_view('input/dropdown', array(
 	'name' => 'params[period]',
 	'options_values' => array(
-		'minute' => elgg_echo('videos:minute'),
-		'fiveminute' => elgg_echo('videos:fiveminute'),
-		'fifteenmin' => elgg_echo('videos:fifteenmin'),
-		'halfhour' => elgg_echo('videos:halfhour'),
-		'hourly' => elgg_echo('videos:hourly'),
-		'daily' => elgg_echo('videos:daily'),
+		'minute' => elgg_echo('video:minute'),
+		'fiveminute' => elgg_echo('video:fiveminute'),
+		'fifteenmin' => elgg_echo('video:fifteenmin'),
+		'halfhour' => elgg_echo('video:halfhour'),
+		'hourly' => elgg_echo('video:hourly'),
+		'daily' => elgg_echo('video:daily'),
 	),
 	'value' => $vars['entity']->period,
 ));

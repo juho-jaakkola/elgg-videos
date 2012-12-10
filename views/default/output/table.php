@@ -2,7 +2,7 @@
 /**
  * Table output
  *
- * @package Videos
+ * @package Video
  *
  * @uses $vars['table_class] The classes for table element
  * @uses $vars['headers'] The column headers

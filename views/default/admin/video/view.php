@@ -1,6 +1,6 @@
 <?php
 
-elgg_load_library('elgg:videos');
+elgg_load_library('elgg:video');
 
 $guid = get_input('guid');
 
@@ -14,8 +14,8 @@ if (!elgg_instanceof($video, 'object', 'video')) {
 echo elgg_view_title($video->title);
 
 $headers = array(
-	elgg_echo('videos:format'),
-	elgg_echo('videos:size'),
+	elgg_echo('video:format'),
+	elgg_echo('video:size'),
 	elgg_echo('status'),
 	'',
 );
@@ -23,7 +23,7 @@ $headers = array(
 $rows = array();
 foreach($video->getConvertedFormats() as $format) {
 	$delete_link = elgg_view('output/confirmlink', array(
-		'href' => "action/videos/delete_format?guid=$guid&format=$format",
+		'href' => "action/video/delete_format?guid=$guid&format=$format",
 		'text' => elgg_echo('delete'),
 	));
 
@@ -53,16 +53,16 @@ $table = elgg_view('output/table', array(
 	'table_class' => 'elgg-table-alt'
 ));
 
-echo elgg_view_module('inline', elgg_echo('videos:formats'), $table);
+echo elgg_view_module('inline', elgg_echo('video:formats'), $table);
 
 echo elgg_view('output/url', array(
-	'href' => "admin/videos/convert?guid=$guid",
-	'text' => elgg_echo('videos:reconvert'),
+	'href' => "admin/video/convert?guid=$guid",
+	'text' => elgg_echo('video:reconvert'),
 	'class' => 'elgg-button elgg-button-action'
 ));
 
 echo elgg_view('output/confirmlink', array(
-	'href' => "action/videos/delete?guid=$guid",
+	'href' => "action/video/delete?guid=$guid",
 	'text' => elgg_echo('delete'),
 	'class' => 'elgg-button elgg-button-action'
 ));

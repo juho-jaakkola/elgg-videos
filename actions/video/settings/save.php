@@ -1,11 +1,11 @@
 <?php
 /**
- * Overrides the default settings action for videos plugin.
+ * Overrides the default settings action for video plugin.
  *
  * @uses array $_REQUEST['params']    A set of key/value pairs to save to the ElggPlugin entity
  * @uses int   $_REQUEST['plugin_id'] The ID of the plugin
  *
- * @package ElggVideos
+ * @package ElggVideo
  */
 
 $params = get_input('params');

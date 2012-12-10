@@ -1,65 +1,65 @@
 <?php
 
-elgg_register_event_handler('init', 'system', 'videos_init');
+elgg_register_event_handler('init', 'system', 'video_init');
 
-function videos_init () {
-	elgg_register_library('elgg:videos', elgg_get_plugins_path() . 'videos/lib/videos.php');
+function video_init () {
+	elgg_register_library('elgg:video', elgg_get_plugins_path() . 'video/lib/video.php');
 
-	$actionspath = elgg_get_plugins_path() . 'videos/actions/videos/';
-	elgg_register_action('videos/upload', $actionspath . 'upload.php');
+	$actionspath = elgg_get_plugins_path() . 'video/actions/video/';
+	elgg_register_action('video/upload', $actionspath . 'upload.php');
 	elgg_register_action('video/delete', $actionspath . 'delete.php');
 	elgg_register_action('video/edit', $actionspath . 'upload.php');
-	elgg_register_action('videos/settings/save', $actionspath . 'settings/save.php', 'admin');
-	elgg_register_action('videos/convert', $actionspath . 'convert.php', 'admin');
-	elgg_register_action('videos/delete_format', $actionspath . 'delete_format.php', 'admin');
+	elgg_register_action('video/settings/save', $actionspath . 'settings/save.php', 'admin');
+	elgg_register_action('video/convert', $actionspath . 'convert.php', 'admin');
+	elgg_register_action('video/delete_format', $actionspath . 'delete_format.php', 'admin');
 
 	// add to the main css
-	elgg_extend_view('css/elgg', 'videos/css');
+	elgg_extend_view('css/elgg', 'video/css');
 
-	elgg_register_page_handler('videos', 'videos_page_handler');
+	elgg_register_page_handler('video', 'video_page_handler');
 
 	// Site navigation
-	$item = new ElggMenuItem('videos', elgg_echo('videos'), 'videos/all');
+	$item = new ElggMenuItem('video', elgg_echo('video'), 'video/all');
 	elgg_register_menu_item('site', $item);
 
-	elgg_register_entity_url_handler('object', 'video', 'videos_url_override');
-	elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'videos_icon_url_override');
+	elgg_register_entity_url_handler('object', 'video', 'video_url_override');
+	elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'video_icon_url_override');
 
-	elgg_register_plugin_hook_handler('register', 'menu:entity', 'videos_entity_menu_setup');
+	elgg_register_plugin_hook_handler('register', 'menu:entity', 'video_entity_menu_setup');
 
 	// Register cron hook
-	$period = elgg_get_plugin_setting('period', 'videos');
-	elgg_register_plugin_hook_handler('cron', $period, 'videos_conversion_cron');
+	$period = elgg_get_plugin_setting('period', 'video');
+	elgg_register_plugin_hook_handler('cron', $period, 'video_conversion_cron');
 
-	// Register an icon handler for videos
-	elgg_register_page_handler('videothumb', 'videos_icon_handler');
+	// Register an icon handler for video
+	elgg_register_page_handler('videothumb', 'video_icon_handler');
 
-	elgg_register_admin_menu_item('administer', 'convert',  'videos');
+	elgg_register_admin_menu_item('administer', 'convert',  'video');
 }
 
-function videos_page_handler ($page) {
-	elgg_load_library('elgg:videos');
+function video_page_handler ($page) {
+	elgg_load_library('elgg:video');
 
-	elgg_push_breadcrumb(elgg_echo('videos'), 'videos/all');
+	elgg_push_breadcrumb(elgg_echo('video'), 'video/all');
 
 	switch ($page[0]) {
 		case 'view':
-			$params = videos_get_page_contents_view($page[1]);
+			$params = video_get_page_contents_view($page[1]);
 			break;
 		case 'owner':
-			videos_register_toggle();
-			$params = videos_get_page_contents_owner();
+			video_register_toggle();
+			$params = video_get_page_contents_owner();
 			break;
 		case 'add':
-			$params = videos_get_page_contents_upload();
+			$params = video_get_page_contents_upload();
 			break;
 		case 'edit':
-			$params = videos_get_page_contents_edit($page[1]);
+			$params = video_get_page_contents_edit($page[1]);
 			break;
 		case 'all':
 		default:
-			videos_register_toggle();
-			$params = videos_get_page_contents_list();
+			video_register_toggle();
+			$params = video_get_page_contents_list();
 			break;
 	}
 
@@ -76,16 +76,16 @@ function videos_page_handler ($page) {
  * @param ElggEntity $entity Video entity
  * @return string Video URL
  */
-function videos_url_override($entity) {
+function video_url_override($entity) {
 	$title = $entity->title;
 	$title = elgg_get_friendly_title($title);
-	return "videos/view/" . $entity->getGUID() . "/" . $title;
+	return "video/view/" . $entity->getGUID() . "/" . $title;
 }
 
 /**
  * Trigger the video conversion
  */
-function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
+function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 	$videos = elgg_get_entities_from_metadata(array(
 		'type' => 'object',
 		'subtype' => 'video',
@@ -98,8 +98,8 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 
 	$video_count = count($videos);
 
-	$formats = videos_get_formats();
-	$framesize = elgg_get_plugin_setting('framesize', 'videos');
+	$formats = video_get_formats();
+	$framesize = elgg_get_plugin_setting('framesize', 'video');
 
 	foreach ($videos as $video) {
 		$conversion_errors = array();
@@ -204,7 +204,7 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 		if (!empty($conversion_errors)) {
 			$conversion_errors = implode(', ', $conversion_errors);
 
-			$error_string = elgg_echo('videos:admin:conversion_error', array($filename, $conversion_errors));
+			$error_string = elgg_echo('video:admin:conversion_error', array($filename, $conversion_errors));
 			elgg_add_admin_notice($error_string);
 		}
 
@@ -213,7 +213,7 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 		} else {
 			$thumbnail_errors = implode(', ', $thumbnail_errors);
 
-			$error_string = elgg_echo('videos:admin:thumbnail_error', array($thumbnail_errors, $filename));
+			$error_string = elgg_echo('video:admin:thumbnail_error', array($thumbnail_errors, $filename));
 			elgg_add_admin_notice($error_string);
 		}
 
@@ -232,8 +232,8 @@ function videos_conversion_cron($hook, $entity_type, $returnvalue, $params) {
  * 
  * @return null|array
  */
-function videos_get_formats() {
-	$plugin = elgg_get_plugin_from_id('videos');
+function video_get_formats() {
+	$plugin = elgg_get_plugin_from_id('video');
 	$formats = $plugin->getMetadata('formats');
 
 	if (is_array($formats)) {
@@ -244,11 +244,11 @@ function videos_get_formats() {
 }
 
 /**
- * Override the default entity icon for videos
+ * Override the default entity icon for video
  *
  * @return string Relative URL
  */
-function videos_icon_url_override($hook, $type, $returnvalue, $params) {
+function video_icon_url_override($hook, $type, $returnvalue, $params) {
 	$video = $params['entity'];
 	$size = $params['size'];
 
@@ -263,7 +263,7 @@ function videos_icon_url_override($hook, $type, $returnvalue, $params) {
 	}
 
 	// TODO Add default images
-	//return "mod/videos/graphics/default{$size}.gif";
+	//return "mod/video/graphics/default{$size}.gif";
 }
 
 /**
@@ -272,7 +272,7 @@ function videos_icon_url_override($hook, $type, $returnvalue, $params) {
  * @param array $page
  * @return void
  */
-function videos_icon_handler($page) {
+function video_icon_handler($page) {
 	if (isset($page[0])) {
 		set_input('video_guid', $page[0]);
 	}
@@ -282,14 +282,14 @@ function videos_icon_handler($page) {
 
 	// Include the standard profile index
 	$plugin_dir = elgg_get_plugins_path();
-	include("$plugin_dir/videos/videothumb.php");
+	include("$plugin_dir/video/videothumb.php");
 	return true;
 }
 
 /**
  * Add links/info to entity menu
  */
-function videos_entity_menu_setup($hook, $type, $return, $params) {
+function video_entity_menu_setup($hook, $type, $return, $params) {
 	if (elgg_in_context('widgets')) {
 		return $return;
 	}
@@ -301,17 +301,6 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 	}
 
 	$conversion_status = $entity->conversion_done;
-
-	if ($entity->canEdit()) {
-		$text = elgg_echo("videos:edit");
-		$options = array(
-			'name' => 'edit',
-			'text' => "<span>$text</span>",
-			'href' => "videos/edit/{$entity->getGUID()}",
-			'priority' => 150,
-		);
-		$return[] = ElggMenuItem::factory($options);
-	}
 
 	if ($conversion_status) {
 		// video duration
@@ -329,8 +318,8 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 	if (elgg_is_admin_logged_in()) {
 		$options = array(
 			'name' => 'manage',
-			'text' => elgg_echo('videos:manage'),
-			'href' => "admin/videos/view?guid={$entity->getGUID()}",
+			'text' => elgg_echo('video:manage'),
+			'href' => "admin/video/view?guid={$entity->getGUID()}",
 			'priority' => 300,
 		);
 		$return[] = ElggMenuItem::factory($options);
@@ -342,7 +331,7 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 /**
  * Adds a toggle to extra menu for switching between list and gallery views
  */
-function videos_register_toggle() {
+function video_register_toggle() {
 	$url = elgg_http_remove_url_query_element(current_page_url(), 'list_type');
 
 	if (get_input('list_type', 'list') == 'list') {
@@ -363,7 +352,7 @@ function videos_register_toggle() {
 		'name' => 'video_list',
 		'text' => $icon,
 		'href' => $url,
-		'title' => elgg_echo("videos:list:$list_type"),
+		'title' => elgg_echo("video:list:$list_type"),
 		'priority' => 1000,
 	));
 }
@@ -373,7 +362,7 @@ function videos_register_toggle() {
  * 
  * @return array
  */
-function videos_get_framesize_options() {
+function video_get_framesize_options() {
 	// TODO Get all the supported formats straight from the converter?
 	return array(
 		'0' => 'same as source',

@@ -1,17 +1,17 @@
 <?php
 /**
- * Videos helper functions
+ * Video helper functions
  *
- * @package ElggVideos
+ * @package ElggVideo
  */
 
 /**
  * Prepare the upload/edit form variables
  *
- * @param Videos $video
+ * @param object $video
  * @return array
  */
-function videos_prepare_form_vars($video = null) {
+function video_prepare_form_vars($video = null) {
 
 	// input names => defaults
 	$values = array(
@@ -44,7 +44,7 @@ function videos_prepare_form_vars($video = null) {
 	return $values;
 }
 
-function videos_get_page_contents_list ($container = 0) {
+function video_get_page_contents_list ($container = 0) {
 	$options = array(
 		'type' => 'object',
 		'subtype' => 'video',
@@ -55,30 +55,30 @@ function videos_get_page_contents_list ($container = 0) {
 	elgg_register_title_button();
 	
 	$params = array(
-		'title' => elgg_echo('videos'),
+		'title' => elgg_echo('video'),
 		'content' => $videos,
 	);
 	
 	return $params;
 }
 
-function videos_get_page_contents_upload () {
+function video_get_page_contents_upload () {
 	$owner = elgg_get_page_owner_entity();
 
 	// set up breadcrumbs
 	if (elgg_instanceof($owner, 'user')) {
-		elgg_push_breadcrumb($owner->name, "videos/owner/$owner->username");
+		elgg_push_breadcrumb($owner->name, "video/owner/$owner->username");
 	} else {
-		elgg_push_breadcrumb($owner->name, "videos/group/$owner->guid/all");
+		elgg_push_breadcrumb($owner->name, "video/group/$owner->guid/all");
 	}
 
-	$title = elgg_echo('videos:add');
+	$title = elgg_echo('video:add');
 	elgg_push_breadcrumb($title);
 
 	// Video upload form
 	$form_vars = array('enctype' => 'multipart/form-data');
-	$body_vars = videos_prepare_form_vars();
-	$form = elgg_view_form('videos/upload', $form_vars, $body_vars);
+	$body_vars = video_prepare_form_vars();
+	$form = elgg_view_form('video/upload', $form_vars, $body_vars);
 
 	$params = array(
 		'title' => $title,
@@ -91,10 +91,10 @@ function videos_get_page_contents_upload () {
 /**
  * Edit a video
  *
- * @package Videos
+ * @package Video
  */
-function videos_get_page_contents_edit ($video_guid) {
-	elgg_load_library('elgg:videos');
+function video_get_page_contents_edit ($video_guid) {
+	elgg_load_library('elgg:video');
 
 	$video = new FilePluginFile($video_guid);
 	if (!$video) {
@@ -104,7 +104,7 @@ function videos_get_page_contents_edit ($video_guid) {
 		forward();
 	}
 
-	$title = elgg_echo('videos:edit');
+	$title = elgg_echo('video:edit');
 
 	elgg_push_breadcrumb(elgg_echo('video'), "video/all");
 	elgg_push_breadcrumb($video->title, $video->getURL());
@@ -113,9 +113,9 @@ function videos_get_page_contents_edit ($video_guid) {
 	elgg_set_page_owner_guid($video->getContainerGUID());
 
 	$form_vars = array('enctype' => 'multipart/form-data');
-	$body_vars = videos_prepare_form_vars($video);
+	$body_vars = video_prepare_form_vars($video);
 
-	$content = elgg_view_form('videos/upload', $form_vars, $body_vars);
+	$content = elgg_view_form('video/upload', $form_vars, $body_vars);
 
 	$params = array(
 		'content' => $content,
@@ -129,13 +129,13 @@ function videos_get_page_contents_edit ($video_guid) {
 /**
  * Disply individual's or group's videos
  */
-function videos_get_page_contents_owner () {
+function video_get_page_contents_owner () {
 	// access check for closed groups
 	group_gatekeeper();
 	
 	$owner = elgg_get_page_owner_entity();
 	if (!$owner) {
-		forward('videos/all');
+		forward('video/all');
 	}
 	
 	elgg_push_breadcrumb($owner->name);
@@ -185,7 +185,7 @@ function videos_get_page_contents_owner () {
  * @param int $guid GUID of a video entity.
  * @return array
  */
-function videos_get_page_contents_view ($guid = null) {
+function video_get_page_contents_view ($guid = null) {
 	$video = get_entity($guid);
 	if (!$video) {
 		register_error(elgg_echo('noaccess'));
@@ -197,9 +197,9 @@ function videos_get_page_contents_view ($guid = null) {
 
 	$crumbs_title = $owner->name;
 	if (elgg_instanceof($owner, 'group')) {
-		elgg_push_breadcrumb($crumbs_title, "videos/group/$owner->guid/all");
+		elgg_push_breadcrumb($crumbs_title, "video/group/$owner->guid/all");
 	} else {
-		elgg_push_breadcrumb($crumbs_title, "videos/owner/$owner->username");
+		elgg_push_breadcrumb($crumbs_title, "video/owner/$owner->username");
 	}
 
 	$title = $video->title;
@@ -210,7 +210,7 @@ function videos_get_page_contents_view ($guid = null) {
 		$content = elgg_view_entity($video, array('full_view' => true));
 		$content .= elgg_view_comments($video);
 	} else {
-		$string = elgg_echo('videos:conversion_pending');
+		$string = elgg_echo('video:conversion_pending');
 		$content = "<div>$string</div>";
 	}
 
