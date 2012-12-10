@@ -3,6 +3,7 @@
 $lang = array(
 	'videos' => 'Videot',
 	'videos:add' => 'Lisää video',
+	'videos:edit' => 'Muokkaa',
 	'video:video' => 'Video',
 	'video:none' => 'Ei videoita.',
 	'video:download' => 'Lataa',

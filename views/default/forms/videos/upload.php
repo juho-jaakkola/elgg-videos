@@ -17,18 +17,19 @@ if (!$container_guid) {
 $guid = elgg_extract('guid', $vars, null);
 
 if ($guid) {
-	$video_label = elgg_echo("video:replace");
 	$submit_label = elgg_echo('save');
 } else {
-	$video_label = elgg_echo("video:video");
 	$submit_label = elgg_echo('upload');
 }
-
 ?>
+
+<?php if (!$guid): ?>
 <div>
-	<label><?php echo $video_label; ?></label><br />
+	<label><?php echo elgg_echo("video:video"); ?></label><br />
 	<?php echo elgg_view('input/file', array('name' => 'upload')); ?>
 </div>
+<?php endif; ?>
+
 <div>
 	<label><?php echo elgg_echo('title'); ?></label><br />
 	<?php echo elgg_view('input/text', array('name' => 'title', 'value' => $title)); ?>

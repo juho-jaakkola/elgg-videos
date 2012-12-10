@@ -89,6 +89,44 @@ function videos_get_page_contents_upload () {
 }
 
 /**
+ * Edit a video
+ *
+ * @package Videos
+ */
+function videos_get_page_contents_edit ($video_guid) {
+	elgg_load_library('elgg:videos');
+
+	$video = new FilePluginFile($video_guid);
+	if (!$video) {
+		forward();
+	}
+	if (!$video->canEdit()) {
+		forward();
+	}
+
+	$title = elgg_echo('videos:edit');
+
+	elgg_push_breadcrumb(elgg_echo('video'), "video/all");
+	elgg_push_breadcrumb($video->title, $video->getURL());
+	elgg_push_breadcrumb($title);
+
+	elgg_set_page_owner_guid($video->getContainerGUID());
+
+	$form_vars = array('enctype' => 'multipart/form-data');
+	$body_vars = videos_prepare_form_vars($video);
+
+	$content = elgg_view_form('videos/upload', $form_vars, $body_vars);
+
+	$params = array(
+		'content' => $content,
+		'title' => $title,
+		'filter' => '',
+	);
+
+	return $params;
+}
+
+/**
  * Disply individual's or group's videos
  */
 function videos_get_page_contents_owner () {

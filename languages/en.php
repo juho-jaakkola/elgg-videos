@@ -3,6 +3,7 @@
 $lang = array(
 	'videos' => 'Videos',
 	'videos:add' => 'Upload a video',
+	'videos:edit' => 'Edit',
 	'video:video' => 'Video',
 	'video:none' => 'No videos.',
 	'video:download' => 'Download',

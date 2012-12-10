@@ -8,6 +8,7 @@ function videos_init () {
 	$actionspath = elgg_get_plugins_path() . 'videos/actions/videos/';
 	elgg_register_action('videos/upload', $actionspath . 'upload.php');
 	elgg_register_action('video/delete', $actionspath . 'delete.php');
+	elgg_register_action('video/edit', $actionspath . 'upload.php');
 	elgg_register_action('videos/settings/save', $actionspath . 'settings/save.php', 'admin');
 	elgg_register_action('videos/convert', $actionspath . 'convert.php', 'admin');
 	elgg_register_action('videos/delete_format', $actionspath . 'delete_format.php', 'admin');
@@ -51,6 +52,9 @@ function videos_page_handler ($page) {
 			break;
 		case 'add':
 			$params = videos_get_page_contents_upload();
+			break;
+		case 'edit':
+			$params = videos_get_page_contents_edit($page[1]);
 			break;
 		case 'all':
 		default:
@@ -298,7 +302,17 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 
 	$conversion_status = $entity->conversion_done;
 
-	// view different items depending on status of video conversion
+	if ($entity->canEdit()) {
+		$text = elgg_echo("videos:edit");
+		$options = array(
+			'name' => 'edit',
+			'text' => "<span>$text</span>",
+			'href' => "videos/edit/{$entity->getGUID()}",
+			'priority' => 150,
+		);
+		$return[] = ElggMenuItem::factory($options);
+	}
+
 	if ($conversion_status) {
 		// video duration
 		$duration = $entity->getDuration();
@@ -309,17 +323,6 @@ function videos_entity_menu_setup($hook, $type, $return, $params) {
 			'priority' => 200,
 		);
 		$return[] = ElggMenuItem::factory($options);
-	} else {
-		// note that conversion is not finished
-		/*
-		$options = array(
-			'name' => 'conversion_status',
-			'text' => elgg_echo("videos:conversion_pending"),
-			'href' => false,
-			'priority' => 100,
-		);
-		$return[] = ElggMenuItem::factory($options);
-		*/
 	}
 
 	// admin links
