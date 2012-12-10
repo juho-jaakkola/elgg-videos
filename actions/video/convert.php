@@ -19,8 +19,7 @@ if (empty($formats)) {
 $inputfile = $video->getFilenameOnFilestore();
 $filepath = $video->getFilenameOnFilestoreWithoutExtension();
 
-$format_errors = array();
-$format_success = array();
+$success = array();
 foreach ($formats as $format) {
 	$outputfile = "$filepath.$format"; 
 
@@ -32,25 +31,19 @@ foreach ($formats as $format) {
 		$converter->setOverwrite();
 		$converter->convert();
 
-		if (file_exists($outputfile) && filesize($outputfile) > 0) {
-			$format_success[] = $format;
-			$video->addConvertedFormat($format);
-		} else {
-			$format_errors[] = $format;
-		}
+		$video->addConvertedFormat($format);
+		$success[] = $format;
 	} catch (exception $e) {
-		register_error($e->getMessage());
-		forward(REFERER);
+		$message = elgg_echo('VideoException:ConversionFailed', array(
+			$e->getMessage(),
+			$converter->getCommand()
+		));
+		register_error($message);
 	}
 }
 
-if (!empty($format_erros)) {
-	$format_errors = implode(', ', $format_errors);
-	register_error(elgg_echo('video:admin:conversion_error', array($video->title, $format_errors)));
+if (!empty($success)) {
+	system_message(elgg_echo('video:convert:success', array(implode(', ', $success))));
 }
 
-system_message(elgg_echo('video:convert:success', array(implode(', ', $format_success))));
-forward("admin/video/convert?guid=$guid");
-
-
-
+forward("admin/video/view?guid=$guid");
