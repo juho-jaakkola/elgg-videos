@@ -177,4 +177,20 @@ class Video extends ElggFile {
 		$this->duration = $duration;
 		return $duration;
 	}
+
+	/**
+	 * Returns array of relative urls for all video sources
+	 * 
+	 * @return array $sources
+	 */
+	public function getSources() {
+		$formats = $this->getConvertedFormats();
+
+		$sources = array();
+		foreach ($formats as $format) {
+			$sources[$format] = "mod/video/video.php?video_guid={$this->getGUID()}&format=$format";
+		}
+
+		return $sources;
+	}
 }
