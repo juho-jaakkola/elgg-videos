@@ -58,7 +58,8 @@ if (elgg_in_context('widgets')) {
 }
 
 if ($full && !elgg_in_context('gallery')) {
-	$player = elgg_view("video/default", $vars);
+	$video_vars = array('sources' => $video->getSources());
+	$player = elgg_view("output/video", $video_vars);
 
 	$params = array(
 		'entity' => $video,
