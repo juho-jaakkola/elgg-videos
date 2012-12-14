@@ -56,6 +56,7 @@ $lang = array(
 	'video:formatdeletefailed' => 'Formaatin poistaminen epäonnistui',
 	'video:formatdeleted' => 'Formaatti poistettu',
 	'video:formatnotfound' => 'Määritettyä formaattia ei löytynyt',
+	'video:alreadyexists' => 'Määritetty versio on jo olemassa',
 	'video:size' => 'Koko',
 	'video:label:guid' => 'Konvertoitavan videon guid',
 	'video:convert:success' => 'Video konvertoitu muotoihin: %s.',

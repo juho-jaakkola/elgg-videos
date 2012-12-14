@@ -20,6 +20,22 @@ if (empty($framesize)) {
 	$framesize = $video->resolution;
 }
 
+$existing = elgg_get_entities_from_metadata(array(
+	'type' => 'object',
+	'subtype' => 'video_source',
+	'container_guid' => $video->getGUID(),
+	'metadata_name_value_pairs' => array(
+		'format' => $format,
+		'resolution' => $framesize
+	),
+));
+
+// Do not convert to the exactly same format and resolution again
+if (!empty($existing)) {
+	register_error(elgg_echo('video:alreadyexists'));
+	forward(REFERER);
+}
+
 $inputfile = $video->getFilenameOnFilestore();
 $filepath = $video->getFilenameOnFilestoreWithoutExtension();
 
