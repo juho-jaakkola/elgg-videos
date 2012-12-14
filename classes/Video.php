@@ -18,6 +18,11 @@ class Video extends ElggFile {
 	 * Delete a single version of the video
 	 */
 	public function deleteFormat($format, $resolution = 0) {
+		if (empty($resolution)) {
+			// Use resolution of original file as defautl
+			$resolution = $this->resolution;
+		}
+
 		$sources = elgg_get_entities_from_metadata(array(
 			'type' => 'object',
 			'subtype' => 'video_source',
@@ -139,31 +144,6 @@ class Video extends ElggFile {
 		} else {
 			return $this->setPrivateSetting('converted_formats', serialize($formats));
 		}
-	}
-
-	/**
-	 * Gets the video duration in format HH:MM:SS
-	 * 
-	 * @return string
-	 */
-	public function getDuration() {
-		if ($this->duration) {
-			return $this->duration;
-		}
-
-		$file = escapeshellarg($this->getFilenameOnFilestore());
-
-		$command = "avconv -i $file 2>&1";
-
-		$fileinfo = shell_exec($command);
-
-		preg_match('/Duration: [0-9]{2}:[0-9]{2}:[0-9]{2}/', $fileinfo, $matches);
-		preg_match('/[0-9]{2}:[0-9]{2}:[0-9]{2}/', $matches[0], $matches);
-
-		$duration = $matches[0];
-
-		$this->duration = $duration;
-		return $duration;
 	}
 
 	/**

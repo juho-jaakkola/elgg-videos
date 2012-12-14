@@ -96,16 +96,15 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 		)
 	));
 
-	$video_count = count($videos);
-
 	$formats = video_get_formats();
 	$framesize = elgg_get_plugin_setting('framesize', 'video');
 
-	if (empty($framesize)) {
-		$framesize = '';
-	}
-
 	foreach ($videos as $video) {
+		// If framesize if not configured, use the same as the original
+		if (empty($framesize)) {
+			$framesize = $video->resolution;
+		}
+
 		$conversion_errors = array();
 		$thumbnail_errors = array();
 		$converted_formats = $video->getConvertedFormats();
@@ -321,10 +320,9 @@ function video_entity_menu_setup($hook, $type, $return, $params) {
 
 	if ($conversion_status) {
 		// video duration
-		$duration = $entity->getDuration();
 		$options = array(
 			'name' => 'length',
-			'text' => $duration,
+			'text' => $entity->duration,
 			'href' => false,
 			'priority' => 200,
 		);

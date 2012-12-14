@@ -17,7 +17,7 @@ if (empty($formats)) {
 }
 
 if (empty($framesize)) {
-	$framesize = '';
+	$framesize = $video->resolution;
 }
 
 $inputfile = $video->getFilenameOnFilestore();

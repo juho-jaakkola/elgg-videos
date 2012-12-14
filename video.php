@@ -8,18 +8,12 @@
 // Get engine
 require_once(dirname(dirname(dirname(__FILE__))) . "/engine/start.php");
 
-// Get video GUID
 $video_guid = (int) get_input('video_guid', 0);
-
 $format = get_input('format');
-
 $resolution = get_input('resolution');
-if (empty($resolution)) {
-	$resolution = '';
-}
 
 $video = get_entity($video_guid);
-if (!$video || $video->getSubtype() != "video" || !$format) {
+if (!$video || $video->getSubtype() != "video" || !$format || !$resolution) {
 	exit;
 }
 

@@ -119,6 +119,11 @@ elgg_clear_sticky_form('video');
 // handle results differently for new videos and video updates
 if ($new_video) {
 	if ($guid) {
+		// Find out file info and save it as metadata
+		$info = new VideoInfo($video);
+		$video->resolution = $info->getResolution();
+		$video->duration = $info->getDuration();
+
 		// Mark the video as unconverted so conversion script can find it
 		$video->conversion_done = false;
 		$video->save();
