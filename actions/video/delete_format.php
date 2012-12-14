@@ -6,23 +6,14 @@
 */
 
 $guid = (int) get_input('guid');
-$format = get_input('format');
-$resolution = get_input('resolution');
 
-$video = new Video($guid);
-if (!$video->guid) {
+$video = get_entity($guid);
+if (!elgg_instanceof($video, 'object', 'video_source')) {
 	register_error(elgg_echo("video:notfound"));
-	forward('video/all');
-}
-
-// Check that the specific format exists
-$formats = $video->getConvertedFormats();
-if (!in_array($format, $formats)) {
-	register_error(elgg_echo("video:formatnotfound"));
 	forward(REFERER);
 }
 
-if ($video->deleteFormat($format, $resolution)) {
+if ($video->delete()) {
 	system_message(elgg_echo("video:formatdeleted"));
 } else {
 	register_error(elgg_echo("video:formatdeletefailed"));

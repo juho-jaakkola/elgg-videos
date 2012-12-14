@@ -24,7 +24,7 @@ $headers = array(
 $rows = array();
 foreach($video->getSources() as $source) {
 	$delete_link = elgg_view('output/confirmlink', array(
-		'href' => "action/video/delete_format?guid=$guid&format={$source->format}&resolution={$source->resolution}",
+		'href' => "action/video/delete_format?guid={$source->getGUID()}",
 		'text' => elgg_echo('delete'),
 	));
 
