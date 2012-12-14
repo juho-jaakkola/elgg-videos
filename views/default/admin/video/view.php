@@ -16,21 +16,21 @@ echo elgg_view_title($video->title);
 $headers = array(
 	elgg_echo('video:format'),
 	elgg_echo('video:size'),
+	elgg_echo('video:resolution'),
 	elgg_echo('status'),
 	'',
 );
 
 $rows = array();
-foreach($video->getConvertedFormats() as $format) {
+foreach($video->getSources() as $source) {
 	$delete_link = elgg_view('output/confirmlink', array(
-		'href' => "action/video/delete_format?guid=$guid&format=$format",
+		'href' => "action/video/delete_format?guid=$guid&format={$source->format}&resolution={$source->resolution}",
 		'text' => elgg_echo('delete'),
 	));
 
-	$filename = $video->getFilenameOnFilestoreWithoutExtension();
-	$file = "$filename.$format";
+	$file = $source->getFilenameOnFilestore();
 	$filesize = filesize($file);
-	
+
 	$status = elgg_echo('ok');
 	if (!file_exists($file) || $filesize == 0) {
 		$status = elgg_echo('error');
@@ -38,8 +38,9 @@ foreach($video->getConvertedFormats() as $format) {
 	}
 
 	$row = array(
-		$format,
+		$source->format,
 		$filesize,
+		$source->resolution,
 		$status,
 		$delete_link,
 	);

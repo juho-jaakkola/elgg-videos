@@ -101,6 +101,10 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 	$formats = video_get_formats();
 	$framesize = elgg_get_plugin_setting('framesize', 'video');
 
+	if (empty($framesize)) {
+		$framesize = '';
+	}
+
 	foreach ($videos as $video) {
 		$conversion_errors = array();
 		$thumbnail_errors = array();
@@ -113,10 +117,12 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			}
 
 			$filename = $video->getFilenameWithoutExtension();
+			$filename = "{$filename}{$framesize}.$format";
 			$dir = $video->getFileDirectory();
-			$output_file = "$dir/$filename.$format";
+			$output_file = "$dir/$filename";
 
 			try {
+				// Create a new video file to data directory
 				$converter = new VideoConverter();
 				$converter->setInputFile($video->getFilenameOnFilestore());
 				$converter->setOutputFile($output_file);
@@ -124,13 +130,24 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				$converter->setFrameSize($framesize);
 				$result = $converter->convert();
 
+				// Create an entity that represents the physical file
+				$source = new VideoSource();
+				$source->format = $format;
+				$source->setFilename("video/$filename");
+				$source->setMimeType("video/$format");
+				$source->resolution = $framesize;
+				$source->owner_guid = $video->getOwnerGUID();
+				$source->container_guid = $video->getGUID();
+				$source->access_id = $video->access_id;
+				$source->save();
+
 				$converted_formats[] = $format;
 				$video->setConvertedFormats($converted_formats);
 
-				echo "<p>Successfully created video file $filename.$format</p>";
+				echo "<p>Successfully created video file $filename</p>";
 			} catch (exception $e) {
 				// Print simple error to screen
-				echo "<p>Failed to create video file $filename.$format</p>";
+				echo "<p>Failed to create video file $filename</p>";
 
 				// Print detailed error to error log
 				$message = elgg_echo('VideoException:ConversionFailed',array(

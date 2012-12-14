@@ -1,6 +1,7 @@
 <?php
 /**
- * Deregister the Video class
+ * Deregister the Video and VideoSource classes
  */
 
 update_subtype('object', 'video');
+update_subtype('object', 'video_source');

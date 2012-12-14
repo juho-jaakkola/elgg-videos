@@ -7,6 +7,7 @@
 
 $guid = (int) get_input('guid');
 $format = get_input('format');
+$resolution = get_input('resolution');
 
 $video = new Video($guid);
 if (!$video->guid) {
@@ -21,10 +22,10 @@ if (!in_array($format, $formats)) {
 	forward(REFERER);
 }
 
-if (!$video->deleteFormat($format)) {
-	register_error(elgg_echo("video:formatdeletefailed"));
-} else {
+if ($video->deleteFormat($format, $resolution)) {
 	system_message(elgg_echo("video:formatdeleted"));
+} else {
+	register_error(elgg_echo("video:formatdeletefailed"));
 }
 
 forward(REFERER);

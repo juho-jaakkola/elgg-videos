@@ -23,10 +23,11 @@ unset($vars['sources']);
 $attributes = elgg_format_attributes($vars);
 
 $source_tags = '';
-foreach ($sources as $format => $source) {
-	$url = elgg_normalize_url($source);
+foreach ($sources as $source) {
+	$url = elgg_normalize_url($source->getURL());
 	$url = elgg_format_url($url);
-	$source_tags .= "<source src=\"$url\" type=\"video/$format\">";
+
+	$source_tags .= "<source src=\"$url\" type=\"video/$source->format\">";
 }
 
 $nosupport = elgg_echo('video:nosupport');

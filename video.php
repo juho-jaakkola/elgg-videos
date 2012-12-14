@@ -13,13 +13,18 @@ $video_guid = (int) get_input('video_guid', 0);
 
 $format = get_input('format');
 
+$resolution = get_input('resolution');
+if (empty($resolution)) {
+	$resolution = '';
+}
+
 $video = get_entity($video_guid);
 if (!$video || $video->getSubtype() != "video" || !$format) {
 	exit;
 }
 
 $filepath = $video->getFilenameOnFilestoreWithoutExtension();
-$file = "$filepath.$format";
+$file = "{$filepath}{$resolution}.$format";
 
 ob_clean();
 header("Content-type: video/$format");

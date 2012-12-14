@@ -16,12 +16,19 @@ if (empty($formats)) {
 	forward(REFERER);
 }
 
+if (empty($framesize)) {
+	$framesize = '';
+}
+
 $inputfile = $video->getFilenameOnFilestore();
 $filepath = $video->getFilenameOnFilestoreWithoutExtension();
 
+$filename = $video->getFilenameWithoutExtension();
+
 $success = array();
 foreach ($formats as $format) {
-	$outputfile = "$filepath.$format"; 
+	$outputfile = "{$filepath}{$framesize}.$format";
+	$filename = "video/{$filename}{$framesize}.$format";
 
 	try {
 		$converter = new VideoConverter();
@@ -30,6 +37,17 @@ foreach ($formats as $format) {
 		$converter->setFrameSize($framesize);
 		$converter->setOverwrite();
 		$converter->convert();
+
+		// Create an entity that represents the physical file
+		$source = new VideoSource();
+		$source->format = $format;
+		$source->setFilename($filename);
+		$source->setMimeType("video/$format");
+		$source->resolution = $framesize;
+		$source->owner_guid = $video->getOwnerGUID();
+		$source->container_guid = $video->getGUID();
+		$source->access_id = $video->access_id;
+		$source->save();
 
 		$video->addConvertedFormat($format);
 		$success[] = $format;

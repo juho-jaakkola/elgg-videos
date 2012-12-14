@@ -15,38 +15,26 @@ class Video extends ElggFile {
 	}
 
 	/**
-	 * Delete all formats of the video
+	 * Delete a single version of the video
 	 */
-	public function delete() {
-		$formats = $this->getConvertedFormats();
+	public function deleteFormat($format, $resolution = 0) {
+		$sources = elgg_get_entities_from_metadata(array(
+			'type' => 'object',
+			'subtype' => 'video_source',
+			'container_guid' => $this->getGUID(),
+			'metadata_name_value_pairs' => array(
+				'format' => $format,
+				'resolution' => $resolution
+			)
+		));
 
-		foreach ($formats as $format) {
-			$this->deleteFormat($format);
-		}
-
-		return parent::delete();
-	}
-
-	/**
-	 * Delete a single format of the video
-	 */
-	public function deleteFormat($format) {
-		$filename = $this->getFilenameWithoutExtension();
-
-		$file = new ElggFile();
-		$file->owner_guid = $this->getOwnerGUID();
-		$file->setFilename("video/{$filename}.{$format}");
-		$filepath = $file->getFilenameOnFilestore();
-
-		// These files are not represented by entities so remove manually
-		if (file_exists($filepath)) {
-			if (unlink($filepath)) {
-				$this->removeConvertedFormat($format);
+		foreach ($sources as $source) {
+			if ($source->delete()) {
 				return true;
+			} else {
+				elgg_log("Video removal failed. Remove $filepath manually, please.", 'WARNING');
+				return false;
 			}
-		} else {
-			elgg_log("Video removal failed. Remove $filepath manually, please.", 'WARNING');
-			return true;
 		}
 	}
 
@@ -179,16 +167,31 @@ class Video extends ElggFile {
 	}
 
 	/**
+	 * Get all VideoSource objects created of this video
+	 * 
+	 * @return array $sources Array of VideoSource objects  
+	 */
+	function getSources() {
+		$sources = elgg_get_entities(array(
+			'type' => 'object',
+			'subtype' => 'video_source',
+			'container_guid' => $this->getGUID(),
+		));
+
+		return $sources;
+	}
+
+	/**
 	 * Returns array of relative urls for all video sources
 	 * 
 	 * @return array $sources
 	 */
-	public function getSources() {
-		$formats = $this->getConvertedFormats();
+	public function getSourceUrls($options) {
+		$sources = $this->getSources($options);
 
-		$sources = array();
-		foreach ($formats as $format) {
-			$sources[$format] = "mod/video/video.php?video_guid={$this->getGUID()}&format=$format";
+		$urls = array();
+		foreach ($sources as $source) {
+			$urls[] = $source->getURL();
 		}
 
 		return $sources;
