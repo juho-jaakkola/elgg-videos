@@ -56,10 +56,13 @@ $lang = array(
 	'video:formatdeletefailed' => 'Failed to delete format',
 	'video:formatdeleted' => 'Format was successfully deleted',
 	'video:formatnotfound' => 'The specified format was not found',
-	'video:alreadyexists' => 'Määritetty versio on jo olemassa',
-	'video:size' => 'Size',
+	'video:alreadyexists' => 'Version like this already exists',
 	'video:label:guid' => 'Guid of the video',
 	'video:convert:success' => 'Video was successfully converted to formats: %s.',
+
+	'video:info' => 'Info',
+	'video:location' => 'Location',
+	'video:size' => 'Size',
 
 	'video:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s. You may find more information in server error log.',
 	'video:admin:thumbnail_error' => 'Failed to create thumbnail(s) %s for the video %s. You may find more information in server error log.',

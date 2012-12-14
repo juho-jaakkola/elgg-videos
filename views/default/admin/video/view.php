@@ -13,6 +13,27 @@ if (!elgg_instanceof($video, 'object', 'video')) {
 
 echo elgg_view_title($video->title);
 
+/**
+ * Display video info
+ */
+$filepath = $video->getFilenameOnFilestore();
+$rows = array(
+	array('guid', $video->getGUID()),
+	array(elgg_echo('video:location'), $filepath),
+	array(elgg_echo('video:size'), filesize($filepath)),
+);
+$table = elgg_view('output/table', array(
+	'rows' => $rows,
+	'table_class' => 'elgg-table-alt'
+));
+
+echo elgg_view_module('inline', elgg_echo('video:info'), $table);
+
+
+/**
+ * Dispaly summary of different video versions
+ */
+
 $headers = array(
 	elgg_echo('video:format'),
 	elgg_echo('video:size'),
@@ -22,6 +43,7 @@ $headers = array(
 );
 
 $rows = array();
+$total_size = 0;
 foreach($video->getSources() as $source) {
 	$delete_link = elgg_view('output/confirmlink', array(
 		'href' => "action/video/delete_format?guid={$source->getGUID()}",
@@ -30,6 +52,8 @@ foreach($video->getSources() as $source) {
 
 	$file = $source->getFilenameOnFilestore();
 	$filesize = filesize($file);
+
+	$total_size += $filesize;
 
 	$status = elgg_echo('ok');
 	if (!file_exists($file) || $filesize == 0) {
@@ -47,6 +71,9 @@ foreach($video->getSources() as $source) {
 
 	$rows[] = $row;
 }
+
+// Add a row that displays total size of all versions
+$rows[] = array('', "<b>$total_size</b>", '', '', '');
 
 $table = elgg_view('output/table', array(
 	'headers' => $headers,

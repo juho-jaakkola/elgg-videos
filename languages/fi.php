@@ -57,9 +57,12 @@ $lang = array(
 	'video:formatdeleted' => 'Formaatti poistettu',
 	'video:formatnotfound' => 'Määritettyä formaattia ei löytynyt',
 	'video:alreadyexists' => 'Määritetty versio on jo olemassa',
-	'video:size' => 'Koko',
 	'video:label:guid' => 'Konvertoitavan videon guid',
 	'video:convert:success' => 'Video konvertoitu muotoihin: %s.',
+
+	'video:info' => 'Info',
+	'video:location' => 'Sijainti',
+	'video:size' => 'Koko',
 
 	'video:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s. You may find more information in server error log.',
 	'video:admin:thumbnail_error' => 'Failed to create thumbnail(s) %s for the video %s. You may find more information in server error log.',
