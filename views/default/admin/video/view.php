@@ -20,6 +20,7 @@ $filepath = $video->getFilenameOnFilestore();
 $rows = array(
 	array('guid', $video->getGUID()),
 	array(elgg_echo('video:location'), $filepath),
+	array(elgg_echo('video:resolution'), $video->resolution),
 	array(elgg_echo('video:size'), filesize($filepath)),
 );
 $table = elgg_view('output/table', array(
