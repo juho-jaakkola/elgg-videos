@@ -9,9 +9,9 @@ $guid_input = elgg_view('input/text', array(
 	'style' => 'width: 10%;'
 ));
 
-$formats_label = elgg_echo('video:setting:label:formats');
-$formats_input = elgg_view('input/checkboxes', array(
-	'name' => 'formats',
+$formats_label = elgg_echo('video:format');
+$formats_input = elgg_view('input/dropdown', array(
+	'name' => 'format',
 	'options' => array(
 		'mp4' => 'mp4',
 		'webm' => 'webm',
@@ -20,7 +20,7 @@ $formats_input = elgg_view('input/checkboxes', array(
 	'value' => $formats,
 ));
 
-$framesize_label = elgg_echo('video:setting:label:framesize');
+$framesize_label = elgg_echo('video:resolution');
 $framesize_input = elgg_view('input/dropdown', array(
 	'name' => 'framesize',
 	'options_values' => video_get_framesize_options(),
