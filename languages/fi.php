@@ -6,6 +6,7 @@ $lang = array(
 	'video:edit' => 'Muokkaa',
 	'video:video' => 'Video',
 	'video:none' => 'Ei videoita.',
+	'video:view' => 'Näytä video',
 	'video:download' => 'Lataa',
 	'video:user' => "Käyttäjän %s videot",
 	'video:conversion_pending' => "Tätä videota ei ole ehditty vielä käsitellä. Yritä hetken kuluttua uudelleen.",

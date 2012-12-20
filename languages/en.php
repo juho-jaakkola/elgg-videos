@@ -6,6 +6,7 @@ $lang = array(
 	'video:edit' => 'Edit',
 	'video:video' => 'Video',
 	'video:none' => 'No videos.',
+	'video:view' => 'View video',
 	'video:download' => 'Download',
 	'video:user' => "%s's videos",
 	'video:conversion_pending' => "This video hasn't been processed yet. Try again after few minutes.",

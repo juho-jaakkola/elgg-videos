@@ -85,6 +85,12 @@ $table = elgg_view('output/table', array(
 echo elgg_view_module('inline', elgg_echo('video:formats'), $table);
 
 echo elgg_view('output/url', array(
+	'href' => $video->getURL(),
+	'text' => elgg_echo('video:view'),
+	'class' => 'elgg-button elgg-button-action'
+));
+
+echo elgg_view('output/url', array(
 	'href' => "admin/video/convert?guid=$guid",
 	'text' => elgg_echo('video:reconvert'),
 	'class' => 'elgg-button elgg-button-action'
