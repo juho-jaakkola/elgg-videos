@@ -42,6 +42,10 @@ $lang = array(
 	'video:hourly' => 'hour',
 	'video:daily' => 'day',
 
+	// river
+	'river:create:object:video' => '%s julkaisi videon %s',
+	'river:comment:object:video' => '%s kommentoi videota %s',
+
 	/**
 	 * Admin features
 	 */

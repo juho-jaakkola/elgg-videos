@@ -130,7 +130,6 @@ if ($new_video) {
 
 		$message = elgg_echo("video:saved");
 		system_message($message);
-		add_to_river('river/object/video/create', 'create', elgg_get_logged_in_user_guid(), $video->guid);
 	} else {
 		// failed to save video object - nothing we can do about this
 		$error = elgg_echo("video:uploadfailed");

@@ -237,6 +237,8 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 		$unconverted = array_diff($formats, $converted_formats);
 		if (empty($unconverted)) {
 			$video->conversion_done = true;
+
+			add_to_river('river/object/video/create', 'create', $video->getOwnerGUID(), $video->getGUID());
 		}
 	}
 
