@@ -149,14 +149,19 @@ class Video extends ElggFile {
 	/**
 	 * Get all VideoSource objects created of this video
 	 * 
-	 * @return array $sources Array of VideoSource objects  
+	 * @param  array $options Options for the query
+	 * @return array $sources Array of VideoSource objects
 	 */
-	function getSources() {
-		$sources = elgg_get_entities(array(
+	function getSources($options = array()) {
+		$defaults = array(
 			'type' => 'object',
 			'subtype' => 'video_source',
 			'container_guid' => $this->getGUID(),
-		));
+		);
+
+		$options = array_merge($defaults, $options);
+
+		$sources = elgg_get_entities_from_metadata($options);
 
 		return $sources;
 	}
@@ -166,7 +171,7 @@ class Video extends ElggFile {
 	 * 
 	 * @return array $sources
 	 */
-	public function getSourceUrls($options) {
+	public function getSourceUrls($options = array()) {
 		$sources = $this->getSources($options);
 
 		$urls = array();
