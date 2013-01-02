@@ -5,10 +5,16 @@ elgg_register_event_handler('init', 'system', 'video_init');
 function video_init () {
 	elgg_register_library('elgg:video', elgg_get_plugins_path() . 'video/lib/video.php');
 
+	// register thumbnailing JavaScript
+	$thumbnail_js = elgg_get_simplecache_url('js', 'video/thumbnailer');
+	elgg_register_simplecache_view('js/video/thumbnailer');
+	elgg_register_js('elgg.video.thumbnailer', $thumbnail_js);
+
 	$actionspath = elgg_get_plugins_path() . 'video/actions/video/';
 	elgg_register_action('video/upload', $actionspath . 'upload.php');
 	elgg_register_action('video/delete', $actionspath . 'delete.php');
 	elgg_register_action('video/edit', $actionspath . 'upload.php');
+	elgg_register_action('video/thumbnail', $actionspath . 'thumbnail.php');
 	elgg_register_action('video/settings/save', $actionspath . 'settings/save.php', 'admin');
 	elgg_register_action('video/convert', $actionspath . 'convert.php', 'admin');
 	elgg_register_action('video/delete_format', $actionspath . 'delete_format.php', 'admin');
@@ -17,6 +23,8 @@ function video_init () {
 	elgg_extend_view('css/elgg', 'video/css');
 
 	elgg_register_page_handler('video', 'video_page_handler');
+
+	elgg_register_event_handler('pagesetup', 'system', 'video_page_setup');
 
 	// Site navigation
 	$item = new ElggMenuItem('video', elgg_echo('video'), 'video/all');
@@ -54,7 +62,12 @@ function video_page_handler ($page) {
 			$params = video_get_page_contents_upload();
 			break;
 		case 'edit':
+			video_edit_menu_setup($page[1]);
 			$params = video_get_page_contents_edit($page[1]);
+			break;
+		case 'thumbnail':
+			video_edit_menu_setup($page[1]);
+			$params = video_get_page_contents_edit_thumbnail($page[1]);
 			break;
 		case 'all':
 		default:
@@ -69,7 +82,6 @@ function video_page_handler ($page) {
 	return true;
 }
 
-
 /**
  * Populates the ->getUrl() method for video objects
  *
@@ -80,6 +92,20 @@ function video_url_override($entity) {
 	$title = $entity->title;
 	$title = elgg_get_friendly_title($title);
 	return "video/view/" . $entity->getGUID() . "/" . $title;
+}
+
+function video_edit_menu_setup($guid) {
+	elgg_register_menu_item('page', array(
+		'name' => 'edit_video',
+		'href' => "video/edit/{$guid}",
+		'text' => elgg_echo('video:edit'),
+	));
+
+	elgg_register_menu_item('page', array(
+		'name' => 'edit_video_thumbnail',
+		'href' => "video/thumbnail/{$guid}",
+		'text' => elgg_echo('video:thumbnail:edit'),
+	));
 }
 
 /**
@@ -95,6 +121,8 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			'value' => 0,
 		)
 	));
+
+	elgg_load_library('elgg:video');
 
 	$formats = video_get_formats();
 	$framesize = elgg_get_plugin_setting('framesize', 'video');
@@ -157,64 +185,6 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 
 				$format_errors[] = $format;
 			}
-
-			$icon_sizes = elgg_get_config('icon_sizes');
-
-			// Use default thumbnail as master
-			$imagename = "{$video->getGUID()}master.jpg";
-			$imagepath = "$dir/$imagename";
-
-			try {
-				$thumbnailer = new VideoThumbnailer();
-				$thumbnailer->setInputFile($video->getFilenameOnFilestore());
-				$thumbnailer->setOutputFile($imagepath);
-				$thumbnailer->setPosition(1);
-				$result = $thumbnailer->execute();
-
-				echo "<p>Successfully created thumbnail $imagename</p>";
-			} catch (exception $e) {
-				echo "<p>Failed to create thumbnail $imagename</p>";
-				error_log($e->getMessage());
-
-				$thumbnail_errors[] = $imagename;
-			}
-
-			// get the images and save their file handlers into an array
-			// so we can do clean up if one fails.
-			$files = array();
-
-			// Create the thumbnails
-			foreach ($icon_sizes as $name => $size_info) {
-				// We have already created master image
-				if ($name == 'master') {
-					continue;
-				}
-
-				$resized = get_resized_image_from_existing_file($imagepath, $size_info['w'], $size_info['h'], true);
-
-				if (!$resized) {
-					echo "<p>Failed to create thumbnail $imagename</p>";
-					error_log($e->getMessage());
-					$thumbnail_errors[] = $imagename;
-
-					// TODO Should we revert the whole thumbnailing process if one image fails?
-					continue;
-				}
-
-				$file = new ElggFile();
-				$file->owner_guid = $video->owner_guid;
-				$file->container_guid = $video->getGUID();
-				$file->setFilename("video/{$video->getGUID()}{$name}.jpg");
-				$file->open('write');
-				$result = $file->write($resized);
-				$file->close();
-
-				if ($result) {
-					echo "<p>Successfully created thumbnail {$file->getFilename()}</p>";
-				}
-
-				$files[] = $file;
-			}
 		}
 
 		if (!empty($conversion_errors)) {
@@ -224,14 +194,7 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			elgg_add_admin_notice($error_string);
 		}
 
-		if (empty($thumbnail_errors)) {
-			$video->icontime = time();
-		} else {
-			$thumbnail_errors = implode(', ', $thumbnail_errors);
-
-			$error_string = elgg_echo('video:admin:thumbnail_error', array($thumbnail_errors, $filename));
-			elgg_add_admin_notice($error_string);
-		}
+		video_create_thumbnails($video);
 
 		// Mark conversion done if all formats are found
 		$unconverted = array_diff($formats, $converted_formats);

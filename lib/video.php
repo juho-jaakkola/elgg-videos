@@ -127,21 +127,55 @@ function video_get_page_contents_edit ($video_guid) {
 }
 
 /**
+ * Edit video thumbnail
+ */
+function video_get_page_contents_edit_thumbnail ($guid) {
+	$video = get_entity($guid);
+
+	if (!$video) {
+		register_error('notfound');
+		forward(REFERER);
+	}
+
+	elgg_load_js('elgg.video.thumbnailer');
+
+	$info_text = elgg_echo('video:thumbnail:instructions');
+	$info = "<p>$info_text</p>";
+
+	$sources = $video->getSourceUrls();
+
+	$video_preview = elgg_view('output/video', array(
+		'sources' => $sources,
+		'id' => 'elgg-video',
+	));
+
+	$form = elgg_view_form('video/thumbnail', array(), array('guid' => $guid));
+
+	$params = array(
+		'title' => elgg_echo('video:thumbnail:edit'),
+		'content' => $info . $video_preview . $form,
+		'filter' => false,
+	);
+
+	return $params;
+}
+
+/**
  * Disply individual's or group's videos
  */
 function video_get_page_contents_owner () {
 	// access check for closed groups
 	group_gatekeeper();
-	
+
 	$owner = elgg_get_page_owner_entity();
 	if (!$owner) {
 		forward('video/all');
 	}
 	
 	elgg_push_breadcrumb($owner->name);
-	
+
 	elgg_register_title_button();
-	
+
 	$params = array();
 	
 	if ($owner->guid == elgg_get_logged_in_user_guid()) {
@@ -192,7 +226,7 @@ function video_get_page_contents_view ($guid = null) {
 		$_SESSION['last_forward_from'] = current_page_url();
 		forward('');
 	}
-	
+
 	$owner = elgg_get_page_owner_entity();
 
 	$crumbs_title = $owner->name;
@@ -229,4 +263,76 @@ function video_get_page_contents_view ($guid = null) {
 	);
 	
 	return $params;
+}
+
+/**
+ * Make thumbnails of given video position. Defaults to beginning of video.
+ * 
+ * @param Video $video    The video object
+ * @param int   $position Video position
+ */
+function video_create_thumbnails($video, $position = 0) {
+	$icon_sizes = elgg_get_config('icon_sizes');
+	$square = elgg_get_plugin_setting('square_icons', 'video');
+
+	// Default to square thumbnail images
+	if (is_null($square)) {
+		$square = true;
+	}
+
+	$square = $square == 1 ? true : false;
+
+	$dir = $video->getFileDirectory();
+
+	// Use default thumbnail as master
+	$imagename = "{$video->getGUID()}master.jpg";
+	$imagepath = "$dir/$imagename";
+
+	try {
+		$thumbnailer = new VideoThumbnailer();
+		$thumbnailer->setInputFile($video->getFilenameOnFilestore());
+		$thumbnailer->setOutputFile($imagepath);
+		$thumbnailer->setPosition($position);
+		$thumbnailer->execute();
+	} catch (exception $e) {
+		error_log("ERROR: Failed to create thumbnail for video {$video->getGUID()}. Message: {$e->getMessage()}");
+		return false;
+	}
+
+	$files = array();
+
+	// Create the thumbnails
+	foreach ($icon_sizes as $name => $size_info) {
+		// We have already created master image
+		if ($name == 'master') {
+			continue;
+		}
+
+		$resized = get_resized_image_from_existing_file($imagepath, $size_info['w'], $size_info['h'], $square);
+
+		if ($resized) {
+			$file = new ElggFile();
+			$file->owner_guid = $video->owner_guid;
+			$file->container_guid = $video->getGUID();
+			$file->setFilename("video/{$video->getGUID()}{$name}.jpg");
+			$file->open('write');
+			$file->write($resized);
+			$file->close();
+
+			$files[] = $file;
+		} else {
+			error_log("ERROR: Failed to create thumbnail '$name' for video {$video->getFilenameOnFilestore()}.");
+
+			// Delete all images if one fails
+			foreach ($files as $file) {
+				$file->delete();
+			}
+
+			return false;
+		}
+	}
+
+	$video->icontime = time();
+
+	return true;
 }

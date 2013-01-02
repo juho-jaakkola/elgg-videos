@@ -4,6 +4,7 @@ $lang = array(
 	'video' => 'Videot',
 	'video:add' => 'Lisää video',
 	'video:edit' => 'Muokkaa',
+	'video:thumbnail:edit' => 'Muokkaa esikatselukuvaa',
 	'video:video' => 'Video',
 	'video:none' => 'Ei videoita.',
 	'video:view' => 'Näytä video',
@@ -11,6 +12,8 @@ $lang = array(
 	'video:user' => "Käyttäjän %s videot",
 	'video:conversion_pending' => "Tätä videota ei ole ehditty vielä käsitellä. Yritä hetken kuluttua uudelleen.",
 	'video:nosupport' => 'Selaimesi ei tue HTML5 videotagia',
+	'video:thumbnail:position' => 'Kuvan sijainti sekunteina',
+	'video:thumbnail:instructions' => 'Tällä sivulla voit valita videon esikatselukuvissa näytettävän kuvan. Valitse kuva joko pysäyttämällä video haluamaasi kohtaan tai syöttämällä haluamasi aika sekunteina suoraan tektikenttään.',
 	'video:' => '',
 
 	'item:object:video' => 'Videot',
@@ -22,6 +25,7 @@ $lang = array(
 	 */
 	'video:saved' => 'Video tallennettu',
 	'video:deleted' => 'Video poistettu',
+	'video:thumbnail:success' => 'Luotiin uudet esikatselukuvat',
 
 	/**
 	 * Error messages
@@ -31,6 +35,7 @@ $lang = array(
 	'video:cannotload' => "Videon lisäämisessä tapahtui virhe",
 	'video:nofile' => "Valitse lisäätävä tiedosto",
 	'video:uploadfailed' => 'Videon tallentaminen epäonnistui.',
+	'video:thumbnail:error' => 'Yhden tai useamman esiatselukuvan luominen epäonnistui',
 
 	/**
 	 * Cron intervals for video conversion
@@ -70,13 +75,14 @@ $lang = array(
 	'video:size' => 'Koko',
 
 	'video:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s. You may find more information in server error log.',
-	'video:admin:thumbnail_error' => 'Failed to create thumbnail(s) %s for the video %s. You may find more information in server error log.',
+	'video:admin:thumbnail_error' => 'Failed to create thumbnail(s) for the video %s. You may find more information in server error log.',
 
 	'video:setting:instructions' => 'Note that these settings only affect the content created in the future.',
 	'video:setting:label:formats' => 'Convert videos to these formats',
 	'video:setting:label:framesize' => 'Video frame size (resolution)',
 	'video:setting:label:video_width' => 'Video player width as pixels (leave empty to view as 100%)',
 	'video:setting:label:period' => 'Check for unconverted videos every',
+	'video:setting:label:square_icons' => 'Use square thumbnail icons',
 
 	'VideoException:ConversionFailed' => 'ERROR: Video conversion failed. %s. Command: "%s"',
 );

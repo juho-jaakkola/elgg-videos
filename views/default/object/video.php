@@ -83,7 +83,7 @@ if ($full && !elgg_in_context('gallery')) {
 	echo '<div class="video-gallery-item">';
 	echo "<h3>" . $video->title . "</h3>";
 	echo elgg_view_entity_icon($video, 'medium');
-	echo "<p class='subtitle'>$owner_link<br />$date</p>";
+	echo "<p class='subtitle'>$owner_link</p>";
 	echo '</div>';
 } else {
 	// brief view

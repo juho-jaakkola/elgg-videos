@@ -42,6 +42,16 @@ $period_input = elgg_view('input/dropdown', array(
 	'value' => $vars['entity']->period,
 ));
 
+$square_icons_label = elgg_echo('video:setting:label:square_icons');
+$square_icons_input = elgg_view('input/dropdown', array(
+	'name' => 'params[square_icons]',
+	'options_values' => array(
+		true => elgg_echo('option:yes'),
+		false => elgg_echo('option:no')
+	),
+	'value' => $vars['entity']->square_icons,
+));
+
 echo <<<FORM
 <div><p>$instructions</p></div>
 <div>
@@ -59,5 +69,9 @@ echo <<<FORM
 <div>
 	<label>$period_label</label>
 	$period_input
+</div>
+<div>
+	<label>$square_icons_label</label>
+	$square_icons_input
 </div>
 FORM;
