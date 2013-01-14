@@ -59,6 +59,16 @@ if (elgg_in_context('widgets')) {
 
 if ($full && !elgg_in_context('gallery')) {
 	$video_vars = array('sources' => $video->getSources());
+
+	$width = elgg_get_plugin_setting('video_width', 'video');
+	if ($width) {
+		$video_vars['width'] = $width;
+	}
+	$height = elgg_get_plugin_setting('video_height', 'video');
+	if ($height) {
+		$video_vars['height'] = $height;
+	}
+
 	$player = elgg_view("output/video", $video_vars);
 
 	$params = array(

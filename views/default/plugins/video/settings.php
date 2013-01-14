@@ -28,6 +28,12 @@ $video_width_input = elgg_view('input/text', array(
 	'value' => $vars['entity']->video_width,
 ));
 
+$video_height_label = elgg_echo('video:setting:label:video_height');
+$video_height_input = elgg_view('input/text', array(
+	'name' => 'params[video_height]',
+	'value' => $vars['entity']->video_height,
+));
+
 $period_label = elgg_echo('video:setting:label:period');
 $period_input = elgg_view('input/dropdown', array(
 	'name' => 'params[period]',
@@ -65,6 +71,10 @@ echo <<<FORM
 <div>
 	<label>$video_width_label</label>
 	$video_width_input
+</div>
+<div>
+	<label>$video_height_label</label>
+	$video_height_input
 </div>
 <div>
 	<label>$period_label</label>

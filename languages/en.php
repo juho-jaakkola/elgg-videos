@@ -81,6 +81,7 @@ $lang = array(
 	'video:setting:label:formats' => 'Convert videos to these formats',
 	'video:setting:label:framesize' => 'Video frame size (resolution)',
 	'video:setting:label:video_width' => 'Video player width as pixels (leave empty to view as 100%)',
+	'video:setting:label:video_height' => 'Video player height as pixels',
 	'video:setting:label:period' => 'Check for unconverted videos every',
 	'video:setting:label:square_icons' => 'Use square thumbnail icons',
 
