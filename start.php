@@ -112,6 +112,8 @@ function video_edit_menu_setup($guid) {
  * Trigger the video conversion
  */
 function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
+	$ia = elgg_set_ignore_access(true);
+
 	$videos = elgg_get_entities_from_metadata(array(
 		'type' => 'object',
 		'subtype' => 'video',
@@ -204,6 +206,8 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			add_to_river('river/object/video/create', 'create', $video->getOwnerGUID(), $video->getGUID());
 		}
 	}
+
+	elgg_set_ignore_access($ia);
 
 	return $returnvalue;
 }
