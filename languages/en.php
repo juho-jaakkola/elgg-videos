@@ -17,6 +17,7 @@ $lang = array(
 	'video:' => '',
 
 	'item:object:video' => 'Videos',
+	'item:object:video_source' => 'Video sources',
 	'video:list:list' => 'Switch to the list view',
 	'video:list:gallery' => 'Switch to the gallery view',
 

@@ -17,6 +17,7 @@ $lang = array(
 	'video:' => '',
 
 	'item:object:video' => 'Videot',
+	'item:object:video_source' => 'Videomuunnokset',
 	'video:list:list' => 'Vaihda listanäkymään',
 	'video:list:gallery' => 'Vaihda gallerianäkymään',
 
