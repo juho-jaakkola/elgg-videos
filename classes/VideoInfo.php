@@ -7,8 +7,8 @@ class VideoInfo extends VideoShellAPI {
 	private $fileinfo;
 
 	public function __construct(Video $video) {
-		$this->setInputfile($video->getFilenameOnFilestore());
 		parent::__construct();
+		$this->setInputfile($video->getFilenameOnFilestore());
 		$this->fileinfo = $this->execute();
 	}
 
