@@ -41,6 +41,7 @@ $headers = array(
 	elgg_echo('video:size'),
 	elgg_echo('video:resolution'),
 	elgg_echo('video:bitrate'),
+	elgg_echo('video:location'),
 	elgg_echo('status'),
 	'',
 );
@@ -69,6 +70,7 @@ foreach($video->getSources() as $source) {
 		$filesize,
 		$source->resolution,
 		$source->bitrate,
+		$file,
 		$status,
 		$delete_link,
 	);
@@ -77,7 +79,7 @@ foreach($video->getSources() as $source) {
 }
 
 // Add a row that displays total size of all versions
-$rows[] = array('', "<b>$total_size</b>", '', '', '');
+$rows[] = array('', "<b>$total_size</b>", '', '', '', '', '');
 
 $table = elgg_view('output/table', array(
 	'headers' => $headers,
