@@ -64,6 +64,7 @@ $lang = array(
 	'video:formats' => 'Formaatit',
 	'video:format' => 'Formaatti',
 	'video:resolution' => 'Resoluutio',
+	'video:bitrate' => 'Bitrate',
 	'video:formatdeletefailed' => 'Formaatin poistaminen epäonnistui',
 	'video:formatdeleted' => 'Formaatti poistettu',
 	'video:formatnotfound' => 'Määritettyä formaattia ei löytynyt',

@@ -122,6 +122,7 @@ if ($new_video) {
 		// Find out file info and save it as metadata
 		$info = new VideoInfo($video);
 		$video->resolution = $info->getResolution();
+		$video->bitrate = $info->getBitrate();
 		$video->duration = $info->getDuration();
 
 		// Mark the video as unconverted so conversion script can find it

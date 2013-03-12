@@ -34,4 +34,15 @@ class VideoInfo extends VideoShellAPI {
 		preg_match('/[0-9]{2}:[0-9]{2}:[0-9]{2}/', $matches[0], $matches);
 		return $matches[0];
 	}
+
+	/**
+	 * Get video bitrate in format "400 kb/s"
+	 * 
+	 * @return string
+	 */
+	public function getBitrate() {
+		preg_match('/bitrate: [0-9]+ kb\/s/', $this->fileinfo, $matches);
+		preg_match('/[0-9]+ kb\/s/', $matches[0], $matches);
+		return $matches[0];
+	}
 }

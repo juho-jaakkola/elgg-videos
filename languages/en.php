@@ -64,6 +64,7 @@ $lang = array(
 	'video:formats' => 'Formats',
 	'video:format' => 'Format',
 	'video:resolution' => 'Resolution',
+	'video:bitrate' => 'Bitrate',
 	'video:formatdeletefailed' => 'Failed to delete format',
 	'video:formatdeleted' => 'Format was successfully deleted',
 	'video:formatnotfound' => 'The specified format was not found',

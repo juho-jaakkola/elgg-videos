@@ -167,6 +167,7 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				$source->setFilename("video/$filename");
 				$source->setMimeType("video/$format");
 				$source->resolution = $framesize;
+				$source->bitrate = $bitrate;
 				$source->owner_guid = $video->getOwnerGUID();
 				$source->container_guid = $video->getGUID();
 				$source->access_id = $video->access_id;
