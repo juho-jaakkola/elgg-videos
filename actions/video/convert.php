@@ -74,6 +74,8 @@ try {
 	$source->delete();
 
 	$message = elgg_echo('VideoException:ConversionFailed', array(
+		$inputfile,
+		$format,
 		$e->getMessage(),
 		$converter->getCommand()
 	));

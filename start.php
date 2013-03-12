@@ -136,8 +136,6 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			$framesize = $video->resolution;
 		}
 
-		$conversion_errors = array();
-		$thumbnail_errors = array();
 		$converted_formats = $video->getConvertedFormats();
 
 		foreach ($formats as $format) {
@@ -146,6 +144,7 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				continue;
 			}
 
+			$inputfile = $video->getFilenameOnFilestore();
 			$filename = $video->getFilenameWithoutExtension();
 			$filename = "{$filename}{$framesize}.$format";
 			$dir = $video->getFileDirectory();
@@ -154,7 +153,7 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			try {
 				// Create a new video file to data directory
 				$converter = new VideoConverter();
-				$converter->setInputFile($video->getFilenameOnFilestore());
+				$converter->setInputFile($inputfile);
 				$converter->setOutputFile($output_file);
 				$converter->setOverwrite();
 				$converter->setFrameSize($framesize);
@@ -182,21 +181,16 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				echo "<p>Failed to create video file $filename</p>";
 
 				// Print detailed error to error log
-				$message = elgg_echo('VideoException:ConversionFailed',array(
+				$message = elgg_echo('VideoException:ConversionFailed', array(
+					$inputfile,
+					$format,
 					$e->getMessage(),
 					$converter->getCommand()
 				));
 				error_log($message);
 
-				$format_errors[] = $format;
+				elgg_add_admin_notice('conversion_error', $message);
 			}
-		}
-
-		if (!empty($conversion_errors)) {
-			$conversion_errors = implode(', ', $conversion_errors);
-
-			$error_string = elgg_echo('video:admin:conversion_error', array($filename, $conversion_errors));
-			elgg_add_admin_notice($error_string);
 		}
 
 		video_create_thumbnails($video);

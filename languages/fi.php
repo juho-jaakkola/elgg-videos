@@ -76,7 +76,6 @@ $lang = array(
 	'video:location' => 'Sijainti',
 	'video:size' => 'Koko',
 
-	'video:admin:conversion_error' => 'Failed to convert video ‰s to the following format(s): %s. You may find more information in server error log.',
 	'video:admin:thumbnail_error' => 'Failed to create thumbnail(s) for the video %s. You may find more information in server error log.',
 
 	'video:setting:instructions' => 'Note that these settings only affect the content created in the future.',
@@ -88,7 +87,7 @@ $lang = array(
 	'video:setting:label:period' => 'Check for unconverted videos every',
 	'video:setting:label:square_icons' => 'Use square thumbnail icons',
 
-	'VideoException:ConversionFailed' => 'ERROR: Video conversion failed. %s. Command: "%s"',
+	'VideoException:ConversionFailed' => 'ERROR: Failed to convert video %s to format %s.<br /><br />%s.<br /><br />Used command: "%s"',
 );
 
 add_translation('fi', $lang);
