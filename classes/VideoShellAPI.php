@@ -31,7 +31,7 @@ class VideoShellAPI {
 
 		// If outputting a file check that it exists
 		if ($this->outputfile) {
-			if (!file_exists($this->outputfile)) {
+			if (!file_exists($this->outputfile) || filesize($this->outputfile) == 0) {
 				throw new Exception($this->getError());
 			}
 		}
