@@ -35,4 +35,18 @@ class VideoConverter extends VideoShellAPI {
 			$this->addOutfileOption("-s $size");
 		}
 	}
+
+	/**
+	 * Set bitrate (kb/s in format "32k")
+	 * 
+	 * If undefined or 0 the conversion uses the same bitrate as the source
+	 * 
+	 * @param string $size The bitrate
+	 */
+	public function setBitrate ($bitrate) {
+		if (!empty($bitrate)) {
+			$size = escapeshellarg($bitrate);
+			$this->addOutfileOption("-b $bitrate");
+		}
+	}
 }

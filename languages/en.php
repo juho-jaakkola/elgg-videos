@@ -81,6 +81,7 @@ $lang = array(
 	'video:setting:instructions' => 'Note that these settings only affect the content created in the future.',
 	'video:setting:label:formats' => 'Convert videos to these formats',
 	'video:setting:label:framesize' => 'Video frame size (resolution)',
+	'video:setting:label:bitrate' => 'Bitrate (e.g. in format "32k")',
 	'video:setting:label:video_width' => 'Video player width as pixels (leave empty to view as 100%)',
 	'video:setting:label:video_height' => 'Video player height as pixels',
 	'video:setting:label:period' => 'Check for unconverted videos every',

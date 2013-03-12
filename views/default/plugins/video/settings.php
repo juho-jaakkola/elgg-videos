@@ -22,6 +22,12 @@ $framesize_input = elgg_view('input/dropdown', array(
 	'value' => $vars['entity']->framesize,
 ));
 
+$bitrate_label = elgg_echo('video:setting:label:bitrate');
+$bitrate_input = elgg_view('input/text', array(
+	'name' => 'params[bitrate]',
+	'value' => $vars['entity']->bitrate,
+));
+
 $video_width_label = elgg_echo('video:setting:label:video_width');
 $video_width_input = elgg_view('input/text', array(
 	'name' => 'params[video_width]',
@@ -67,6 +73,10 @@ echo <<<FORM
 <div>
 	<label>$framesize_label</label>
 	$framesize_input
+</div>
+<div>
+	<label>$bitrate_label</label>
+	$bitrate_input
 </div>
 <div>
 	<label>$video_width_label</label>

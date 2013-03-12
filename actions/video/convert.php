@@ -3,6 +3,7 @@
 $guid = get_input('guid');
 $format = get_input('format');
 $framesize = get_input('framesize');
+$bitrate = get_input('bitrate');
 
 $video = get_entity($guid);
 
@@ -33,7 +34,8 @@ $existing = elgg_get_entities_from_metadata(array(
 
 if (!empty($existing)) {
 	// Reconvert an existing source
-	$outputfile = $existing[0]->getFilenameOnFilestore();
+	$source = $existing[0];
+	$outputfile = $source->getFilenameOnFilestore();
 } else {
 	// TODO This is ugly and confusing
 	$filepath = $video->getFilenameOnFilestoreWithoutExtension();
@@ -60,13 +62,16 @@ try {
 	$converter->setInputfile($inputfile);
 	$converter->setOutputfile($outputfile);
 	$converter->setFrameSize($framesize);
+	$converter->setBitrate($bitrate);
 	$converter->setOverwrite();
 	$converter->convert();
 
 	$video->addConvertedFormat($format);
-
 	system_message(elgg_echo('video:convert:success', array($format)));
 } catch (exception $e) {
+	// Delete the faulty format
+	$source->delete();
+
 	$message = elgg_echo('VideoException:ConversionFailed', array(
 		$e->getMessage(),
 		$converter->getCommand()

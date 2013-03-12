@@ -128,6 +128,7 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 
 	$formats = video_get_formats();
 	$framesize = elgg_get_plugin_setting('framesize', 'video');
+	$bitrate = elgg_get_plugin_setting('bitrate', 'video');
 
 	foreach ($videos as $video) {
 		// If framesize if not configured, use the same as the original
@@ -157,6 +158,7 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				$converter->setOutputFile($output_file);
 				$converter->setOverwrite();
 				$converter->setFrameSize($framesize);
+				$converter->setBitrate($bitrate);
 				$result = $converter->convert();
 
 				// Create an entity that represents the physical file
