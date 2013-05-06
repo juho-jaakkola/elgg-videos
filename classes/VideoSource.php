@@ -21,6 +21,11 @@ class VideoSource extends ElggFile {
 			$resolution = "&resolution={$this->resolution}";
 		}
 
-		return "mod/video/video.php?video_guid={$this->getContainerGUID()}&format={$this->format}{$resolution}";
+		/**
+		 * Passing both video and video source guid makes it possible to later
+		 * implement a video quality selector that selects for example all HD
+		 * quality sources from a single video.
+		 */
+		return "mod/video/video.php?guid={$this->guid}&video_guid={$this->getContainerGUID()}&format={$this->format}{$resolution}";
 	}
 }

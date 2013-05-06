@@ -13,6 +13,7 @@ if (!elgg_instanceof($video, 'object', 'video')) {
 
 echo elgg_view_title($video->title);
 
+
 /**
  * Display video info
  */
@@ -55,13 +56,17 @@ foreach($video->getSources() as $source) {
 	));
 
 	$file = $source->getFilenameOnFilestore();
-	$filesize = filesize($file);
+	if (file_exists($file)) {
+		$filesize = filesize($file);
+	} else {
+		$filesize = "-";
+	}
 
 	$total_size += $filesize;
 
 	$status = elgg_echo('ok');
-	if (!file_exists($file) || $filesize == 0) {
-		$status = elgg_echo('error');
+	if (!file_exists($file) || $filesize == 0 || $source->conversion_done == false) {
+		$status = elgg_echo('video:pending');
 		$status = "<span style=\"color: red;\">$status</span>";
 	}
 
@@ -104,5 +109,11 @@ echo elgg_view('output/url', array(
 echo elgg_view('output/confirmlink', array(
 	'href' => "action/video/delete?guid=$guid",
 	'text' => elgg_echo('delete'),
+	'class' => 'elgg-button elgg-button-action'
+));
+
+echo elgg_view('output/confirmlink', array(
+	'href' => "action/video/reset?guid=$guid",
+	'text' => elgg_echo('reset'),
 	'class' => 'elgg-button elgg-button-action'
 ));

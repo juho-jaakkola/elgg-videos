@@ -15,11 +15,40 @@ class Video extends ElggFile {
 	}
 
 	/**
+	 * Override ElggFile::delete()
+	 *
+	 * After deleting the file delete also the directory.
+	 *
+	 * @return bool
+	 */
+	public function delete() {
+		$fs = $this->getFilestore();
+		$dir = $this->getFileDirectory();
+
+		// Delete the file on disc
+		if ($fs->delete($this)) {
+			// Delete the ElggFile entity
+			if (parent::delete()) {
+				// Delete the directory
+				if (is_dir($dir)) {
+				    if (rmdir($dir)) {
+				    	return true;
+				    } else {
+						elgg_add_admin_notice('video_dir_delete_failed', elgg_echo('video:dir_delete_failed', $dir));
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Delete a single version of the video
 	 */
 	public function deleteFormat($format, $resolution = 0) {
 		if (empty($resolution)) {
-			// Use resolution of original file as defautl
+			// Use resolution of the original file as default
 			$resolution = $this->resolution;
 		}
 
@@ -104,49 +133,6 @@ class Video extends ElggFile {
 	}
 
 	/**
-	 * Add a new converted format.
-	 * 
-	 * @param string $format
-	 * @return boolean
-	 */
-	public function addConvertedFormat($format) {
-		$setting = $this->getPrivateSetting('converted_formats');
-		if ($setting) {
-			$formats = unserialize($setting);
-			$formats[] = $format;
-		} else {
-			$formats = array($format);
-		}
-
-		$formats = array_unique($formats);
-
-		return $this->setPrivateSetting('converted_formats', serialize($formats));
-	}
-
-	/**
-	 * Remove one of the converted formats
-	 * 
-	 * @param string $format
-	 * @return boolean
-	 */
-	public function removeConvertedFormat($format) {
-		$setting = $this->getPrivateSetting('converted_formats');
-		$formats = unserialize($setting);
-
-		foreach ($formats as $key => $value) {
-			if ($format === $value) {
-				unset($formats[$key]);
-			}
-		}
-
-		if (empty($formats)) {
-			$this->removePrivateSetting('converted_formats');
-		} else {
-			return $this->setPrivateSetting('converted_formats', serialize($formats));
-		}
-	}
-
-	/**
 	 * Get all VideoSource objects created of this video
 	 * 
 	 * @param  array $options Options for the query
@@ -180,5 +166,45 @@ class Video extends ElggFile {
 		}
 
 		return $sources;
+	}
+
+	/**
+	 * Create different video sources based on plugin configuration
+	 */
+	public function setSources () {
+		$flavors = video_get_flavor_settings();
+
+		foreach ($flavors as $flavor) {
+			$source = new VideoSource();
+			$source->container_guid = $this->getGUID();
+			$source->owner_guid = $this->getOwnerGUID();
+			$source->access_id = $this->access_id;
+			$source->conversion_done = false;
+
+			if (empty($flavor['resolution'])) {
+				$source->resolution = null;
+
+				// Use resolution of the parent in the filename
+				$resolution = $this->resolution;
+			} else {
+				$source->resolution = $flavor['resolution'];
+				$resolution = $source->resolution;
+			}
+
+			if (empty($flavor['bitrate'])) {
+				$source->bitrate = null;
+			} else {
+				$source->bitrate = $flavor['bitrate'];
+			}
+
+			$source->format = $flavor['format'];
+
+			$basename = $this->getFilenameWithoutExtension();
+			$filename = "video/{$this->getGUID()}/{$basename}_{$resolution}.{$source->format}";
+
+			$source->setFilename($filename);
+			$source->setMimeType("video/$source->format");
+			$source->save();
+		}
 	}
 }

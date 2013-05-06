@@ -18,6 +18,9 @@ function video_init () {
 	elgg_register_action('video/settings/save', $actionspath . 'settings/save.php', 'admin');
 	elgg_register_action('video/convert', $actionspath . 'convert.php', 'admin');
 	elgg_register_action('video/delete_format', $actionspath . 'delete_format.php', 'admin');
+	elgg_register_action('video/add_flavor', $actionspath . 'add_flavor.php', 'admin');
+	elgg_register_action('video/delete_flavor', $actionspath . 'delete_flavor.php', 'admin');
+	elgg_register_action('video/reset', $actionspath . 'reset.php', 'admin');
 
 	// add to the main css
 	elgg_extend_view('css/elgg', 'video/css');
@@ -42,7 +45,8 @@ function video_init () {
 	// Register an icon handler for video
 	elgg_register_page_handler('videothumb', 'video_icon_handler');
 
-	elgg_register_admin_menu_item('administer', 'convert',  'video');
+	elgg_register_admin_menu_item('administer', 'convert', 'video');
+	elgg_register_admin_menu_item('administer', 'flavors', 'video');
 }
 
 function video_page_handler ($page) {
@@ -117,73 +121,52 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 	$videos = elgg_get_entities_from_metadata(array(
 		'type' => 'object',
 		'subtype' => 'video',
-		'limit' => 10,
+		'limit' => 2,
 		'metadata_name_value_pairs' => array(
 			'name' => 'conversion_done',
-			'value' => 0,
+			'value' => 0, // In metadata booleans are saved as 0|1
 		)
 	));
 
 	elgg_load_library('elgg:video');
 
-	$formats = video_get_formats();
-	$framesize = elgg_get_plugin_setting('framesize', 'video');
-	$bitrate = elgg_get_plugin_setting('bitrate', 'video');
-
 	foreach ($videos as $video) {
-		// If framesize if not configured, use the same as the original
-		if (empty($framesize)) {
-			$framesize = $video->resolution;
-		}
-
-		$converted_formats = $video->getConvertedFormats();
-
-		foreach ($formats as $format) {
-			// Do not convert same format multiple times
-			if (in_array($format, $converted_formats)) {
+		$sources = $video->getSources();
+		$success = true;
+		foreach ($sources as $source) {
+			// Converted sources may exist if previous conversion has been interrupted
+			if ($source->conversion_done == true) {
 				continue;
 			}
 
-			$inputfile = $video->getFilenameOnFilestore();
-			$filename = $video->getFilenameWithoutExtension();
-			$filename = "{$filename}{$framesize}.$format";
-			$dir = $video->getFileDirectory();
-			$output_file = "$dir/$filename";
-
 			try {
+				$filename = $source->getFilenameOnFilestore();
+
 				// Create a new video file to data directory
 				$converter = new VideoConverter();
-				$converter->setInputFile($inputfile);
-				$converter->setOutputFile($output_file);
-				$converter->setOverwrite();
-				$converter->setFrameSize($framesize);
-				$converter->setBitrate($bitrate);
+				$converter->setInputFile($video->getFilenameOnFilestore());
+				$converter->setOutputFile($filename);
+				$converter->setResolution($source->resolution);
+				$converter->setBitrate($source->bitrate);
 				$result = $converter->convert();
 
-				// Create an entity that represents the physical file
-				$source = new VideoSource();
-				$source->format = $format;
-				$source->setFilename("video/$filename");
-				$source->setMimeType("video/$format");
-				$source->resolution = $framesize;
-				$source->bitrate = $bitrate;
-				$source->owner_guid = $video->getOwnerGUID();
-				$source->container_guid = $video->getGUID();
-				$source->access_id = $video->access_id;
+				// Save video details
+				$info = new VideoInfo($source);
+				$source->resolution = $info->getResolution();
+				$source->bitrate = $info->getBitrate();
+				$source->conversion_done = true;
 				$source->save();
 
-				$converted_formats[] = $format;
-				$video->setConvertedFormats($converted_formats);
-
 				echo "<p>Successfully created video file $filename</p>";
-			} catch (exception $e) {
+			} catch (Exception $e) {
 				// Print simple error to screen
 				echo "<p>Failed to create video file $filename</p>";
 
+				$success = false;
+
 				// Print detailed error to error log
 				$message = elgg_echo('VideoException:ConversionFailed', array(
-					$inputfile,
-					$format,
+					$filename,
 					$e->getMessage(),
 					$converter->getCommand()
 				));
@@ -193,13 +176,8 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 			}
 		}
 
-		video_create_thumbnails($video);
-
-		// Mark conversion done if all formats are found
-		$unconverted = array_diff($formats, $converted_formats);
-		if (empty($unconverted)) {
+		if ($success) {
 			$video->conversion_done = true;
-
 			add_to_river('river/object/video/create', 'create', $video->getOwnerGUID(), $video->getGUID());
 		}
 	}
@@ -301,7 +279,7 @@ function video_entity_menu_setup($hook, $type, $return, $params) {
 			'name' => 'manage',
 			'text' => elgg_echo('video:manage'),
 			'href' => "admin/video/view?guid={$entity->getGUID()}",
-			'priority' => 300,
+			'priority' => 200,
 		);
 		$return[] = ElggMenuItem::factory($options);
 	}
@@ -343,7 +321,7 @@ function video_register_toggle() {
  * 
  * @return array
  */
-function video_get_framesize_options() {
+function video_get_resolution_options() {
 	// TODO Get all the supported formats straight from the converter?
 	return array(
 		'0' => 'same as source',
@@ -353,4 +331,40 @@ function video_get_framesize_options() {
 		'1280x720' => '1280x720 (hd720)',
 		'1920x1080' => '1920x1080 (hd1080)',
 	);
+}
+
+/**
+ * Get video flavor settings
+ * 
+ * @return array $flavors
+ */
+function video_get_flavor_settings () {
+	$settings = elgg_get_plugin_setting('flavors', 'video');
+	$flavors = unserialize($settings);
+
+	if (empty($flavors)) {
+		$flavors = array();
+	}
+
+	return $flavors;
+}
+
+/**
+ * Add a new flavor to flavor settings.
+ */
+function video_add_flavor_setting (array $flavor) {
+	$flavors = video_get_flavor_settings();
+	$flavors[] = $flavor;
+	$settings = serialize($flavors);
+	return elgg_set_plugin_setting('flavors', $settings, 'video');
+}
+
+/**
+ * Add a new flavor to flavor settings.
+ */
+function video_delete_flavor_setting ($id) {
+	$flavors = video_get_flavor_settings();
+	unset($flavors[$id]);
+	$settings = serialize($flavors);
+	return elgg_set_plugin_setting('flavors', $settings, 'video');
 }

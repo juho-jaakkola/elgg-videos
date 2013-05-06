@@ -2,7 +2,7 @@
 
 $guid = get_input('guid');
 $format = get_input('format');
-$framesize = get_input('framesize');
+$resolution = get_input('resolution');
 $bitrate = get_input('bitrate');
 
 $video = get_entity($guid);
@@ -17,8 +17,8 @@ if (empty($format)) {
 	forward(REFERER);
 }
 
-if (empty($framesize)) {
-	$framesize = $video->resolution;
+if (empty($resolution)) {
+	$resolution = $video->resolution;
 }
 
 // See if a source with the same format and resolution already exists
@@ -28,7 +28,7 @@ $existing = elgg_get_entities_from_metadata(array(
 	'container_guid' => $video->getGUID(),
 	'metadata_name_value_pairs' => array(
 		'format' => $format,
-		'resolution' => $framesize
+		'resolution' => $resolution
 	),
 ));
 
@@ -37,18 +37,15 @@ if (!empty($existing)) {
 	$source = $existing[0];
 	$outputfile = $source->getFilenameOnFilestore();
 } else {
-	// TODO This is ugly and confusing
-	$filepath = $video->getFilenameOnFilestoreWithoutExtension();
-	$filename = $video->getFilenameWithoutExtension();
-	$outputfile = "{$filepath}{$framesize}.$format";
-	$filename = "video/{$filename}{$framesize}.$format";
+	$basename = $video->getFilenameWithoutExtension();
+	$filename = "video/{$video->getGUID()}/{$basename}_{$resolution}.{$format}";
 
 	// Create a new entity that represents the physical file
 	$source = new VideoSource();
 	$source->format = $format;
 	$source->setFilename($filename);
 	$source->setMimeType("video/$format");
-	$source->resolution = $framesize;
+	$source->resolution = $resolution;
 	$source->bitrate = $bitrate;
 	$source->owner_guid = $video->getOwnerGUID();
 	$source->container_guid = $video->getGUID();
@@ -56,29 +53,26 @@ if (!empty($existing)) {
 	$source->save();
 }
 
-$inputfile = $video->getFilenameOnFilestore();
-
 try {
 	$converter = new VideoConverter();
-	$converter->setInputfile($inputfile);
-	$converter->setOutputfile($outputfile);
-	$converter->setFrameSize($framesize);
+	$converter->setInputfile($video->getFilenameOnFilestore());
+	$converter->setOutputfile($source->getFilenameOnFilestore());
+	$converter->setResolution($resolution);
 	$converter->setBitrate($bitrate);
-	$converter->setOverwrite();
 	$converter->convert();
 
-	$video->addConvertedFormat($format);
+	$source->conversion_done = true;
 	system_message(elgg_echo('video:convert:success', array($format)));
 } catch (exception $e) {
 	// Delete the faulty format
 	$source->delete();
 
 	$message = elgg_echo('VideoException:ConversionFailed', array(
-		$inputfile,
-		$format,
+		$outputfile,
 		$e->getMessage(),
 		$converter->getCommand()
 	));
+
 	register_error($message);
 }
 

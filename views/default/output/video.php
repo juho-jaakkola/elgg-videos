@@ -32,4 +32,4 @@ foreach ($sources as $source) {
 
 $nosupport = elgg_echo('video:nosupport');
 
-echo "<video $attributes>{$source_tags}{$nosupport}</video>";
+echo "<video $attributes>{$source_tags}<strong>{$nosupport}</strong></video>";

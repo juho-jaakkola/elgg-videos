@@ -8,17 +8,27 @@
 // Get engine
 require_once(dirname(dirname(dirname(__FILE__))) . "/engine/start.php");
 
+$guid = (int) get_input('guid', 0);
 $video_guid = (int) get_input('video_guid', 0);
-$format = get_input('format');
-$resolution = get_input('resolution');
 
-$video = get_entity($video_guid);
-if (!$video || $video->getSubtype() != "video" || !$format || !$resolution) {
-	exit;
+$source = get_entity($guid);
+
+if ($source && elgg_instanceof($source, 'object', 'video_source')) {
+	$file = $source->getFilenameOnFilestore();
+	$format = $source->format;
+} else {
+	// This allows to select a particular video qualirt
+	$video = get_entity($video_guid);
+
+	if (!$video || $video->getSubtype() != "video") {
+		exit;
+	}
+
+	$format = get_input('format');
+	$resolution = get_input('resolution');
+	$filepath = $video->getFilenameOnFilestoreWithoutExtension();
+	$file = "{$filepath}_{$resolution}.$format";
 }
-
-$filepath = $video->getFilenameOnFilestoreWithoutExtension();
-$file = "{$filepath}{$resolution}.$format";
 
 $fp = @fopen($file, 'rb');
 

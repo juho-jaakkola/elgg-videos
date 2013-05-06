@@ -80,7 +80,7 @@ if ($full && !elgg_in_context('gallery')) {
 	$summary = elgg_view('object/elements/summary', $params);
 
 	$text = elgg_view('output/longtext', array('value' => $video->description));
-	$body = "$text $player";
+	$body = "$player $text";
 
 	echo elgg_view('object/elements/full', array(
 		'entity' => $video,

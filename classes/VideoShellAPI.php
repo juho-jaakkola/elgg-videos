@@ -9,6 +9,7 @@ class VideoShellAPI {
 	protected $global_options = array();
 	protected $infile_options = array();
 	protected $outfile_options = array();
+	protected $format = null;
 
 	public function __construct () {
 		$this->converter = 'avconv';
@@ -71,6 +72,11 @@ class VideoShellAPI {
 		}
 	}
 
+	/**
+	 * Set path to input file
+	 * 
+	 * @param string $inputfile Path to the file
+	 */
 	public function setInputfile ($inputfile) {
 		$inputfile = escapeshellarg($inputfile);
 		$this->inputfile = "-i $inputfile";
@@ -82,18 +88,12 @@ class VideoShellAPI {
 	 * @param string $outputfile Path to the file
 	 */
 	public function setOutputFile ($outputfile) {
-		// Hack to force some extra options for mp4 format
-		// TODO Find a better way to add this, also should probably
-		// first check whether this is needed in the first place
-		$pathinfo = pathinfo($outputfile);
-		if ($pathinfo['extension'] == 'mp4') {
-			$this->addOutfileOption('-strict experimental -acodec aac');
-		}
-
+		// The filename may be needed later so don't escape it yet.
 		$this->outputfile = $outputfile;
 	}
 
 	public function setFormat ($format) {
+		$this->format = $format;
 		$format = escapeshellarg($format);
 
 		$this->addOutfileOption("-f $format");

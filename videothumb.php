@@ -16,11 +16,11 @@ $size = get_input('size', 'small');
 
 $video = get_entity($video_guid);
 
-if (!$video || $video->getSubtype() != "video") {
+if (!elgg_instanceof($video, 'object', 'video')) {
 	exit;
 }
 
-$filename = "video/{$video->guid}$size.jpg";
+$filename = "video/{$video_guid}/icon-{$size}.jpg";
 
 // Grab the file
 $thumb = new ElggFile();

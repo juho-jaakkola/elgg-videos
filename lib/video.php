@@ -96,11 +96,8 @@ function video_get_page_contents_upload () {
 function video_get_page_contents_edit ($video_guid) {
 	elgg_load_library('elgg:video');
 
-	$video = new FilePluginFile($video_guid);
-	if (!$video) {
-		forward();
-	}
-	if (!$video->canEdit()) {
+	$video = get_entity($video_guid);
+	if (!elgg_instanceof($video, 'object', 'video') || !$video->canEdit()) {
 		forward();
 	}
 
@@ -283,10 +280,10 @@ function video_create_thumbnails($video, $position = 0) {
 	$square = $square == 1 ? true : false;
 
 	$dir = $video->getFileDirectory();
+	$guid = $video->getGUID();
 
 	// Use default thumbnail as master
-	$imagename = "{$video->getGUID()}master.jpg";
-	$imagepath = "$dir/$imagename";
+	$imagepath = "$dir/icon-master.jpg";
 
 	try {
 		$thumbnailer = new VideoThumbnailer();
@@ -295,9 +292,23 @@ function video_create_thumbnails($video, $position = 0) {
 		$thumbnailer->setPosition($position);
 		$thumbnailer->execute();
 	} catch (exception $e) {
-		error_log("ERROR: Failed to create thumbnail for video {$video->getGUID()}. Message: {$e->getMessage()}");
+		$msg = elgg_echo('VideoException:ThumbnailCreationFailed', array(
+			$video->getFilenameOnFilestore(),
+			$e->getMessage(),
+			$thumbnailer->getCommand()
+		));
+
+		error_log($msg);
+		elgg_add_admin_notice('video_thumbnailing_error', $msg);
 		return false;
 	}
+
+	// Save the master size image
+	$file = new ElggFile();
+	$file->owner_guid = $video->owner_guid;
+	$file->container_guid = $guid;
+	$file->setFilename("video/{$guid}/icon-{$name}.jpg");
+	$file->save();
 
 	$files = array();
 
@@ -313,8 +324,8 @@ function video_create_thumbnails($video, $position = 0) {
 		if ($resized) {
 			$file = new ElggFile();
 			$file->owner_guid = $video->owner_guid;
-			$file->container_guid = $video->getGUID();
-			$file->setFilename("video/{$video->getGUID()}{$name}.jpg");
+			$file->container_guid = $guid;
+			$file->setFilename("video/{$guid}/icon-{$name}.jpg");
 			$file->open('write');
 			$file->write($resized);
 			$file->close();

@@ -1,12 +1,12 @@
 <?php
 /**
- * Get information of video represented by VideoSource object
+ * Get information of video represented by Video or VideoSource entity
  */
- 
+
 class VideoInfo extends VideoShellAPI {
 	private $fileinfo;
 
-	public function __construct(Video $video) {
+	public function __construct(ElggObject $video) {
 		parent::__construct();
 		$this->setInputfile($video->getFilenameOnFilestore());
 		$this->fileinfo = $this->execute();
@@ -17,7 +17,6 @@ class VideoInfo extends VideoShellAPI {
 	 * 
 	 * @return string
 	 */
-
 	public function getResolution() {
 		preg_match('/Video: .*\n/', $this->fileinfo, $matches);
 		preg_match('/[0-9]{1,4}x[0-9]{1,4}/', $matches[0], $matches);
@@ -36,13 +35,13 @@ class VideoInfo extends VideoShellAPI {
 	}
 
 	/**
-	 * Get video bitrate in format "400 kb/s"
+	 * Get video bitrate in kilobits
 	 * 
 	 * @return string
 	 */
 	public function getBitrate() {
 		preg_match('/bitrate: [0-9]+ kb\/s/', $this->fileinfo, $matches);
-		preg_match('/[0-9]+ kb\/s/', $matches[0], $matches);
+		preg_match('/[0-9]+/', $matches[0], $matches);
 		return $matches[0];
 	}
 }

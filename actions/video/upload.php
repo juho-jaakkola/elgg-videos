@@ -82,7 +82,7 @@ $video->save();
 // we have a video upload, so process it
 if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 
-	$prefix = "video/";
+	$prefix = "video/{$video->getGUID()}/";
 
 	// if previous video, delete it
 	if ($new_video == false) {
@@ -95,7 +95,7 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 		$videostorename = $video->getFilename();
 		$videostorename = elgg_substr($videostorename, elgg_strlen($prefix));
 	} else {
-		$videostorename = elgg_strtolower($video->getGUID().$_FILES['upload']['name']);
+		$videostorename = elgg_strtolower($_FILES['upload']['name']);
 	}
 
 	$video->setFilename($prefix . $videostorename);
@@ -103,12 +103,15 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 
 	$video->setMimeType($mime_type);
 	$video->originalvideoname = $_FILES['upload']['name'];
-	$video->simpletype = file_get_simple_type($mime_type);
+	$video->simpletype = 'video';
 
 	// Open the video to guarantee the directory exists
 	$video->open("write");
 	$video->close();
 	move_uploaded_file($_FILES['upload']['tmp_name'], $video->getFilenameOnFilestore());
+
+	// Change the directory mode
+	chmod($video->getFileDirectory(), 0775);
 
 	$guid = $video->save();
 }
@@ -119,6 +122,8 @@ elgg_clear_sticky_form('video');
 // handle results differently for new videos and video updates
 if ($new_video) {
 	if ($guid) {
+		elgg_load_library('elgg:video');
+
 		// Find out file info and save it as metadata
 		$info = new VideoInfo($video);
 		$video->resolution = $info->getResolution();
@@ -128,6 +133,10 @@ if ($new_video) {
 		// Mark the video as unconverted so conversion script can find it
 		$video->conversion_done = false;
 		$video->save();
+
+		$video->setSources();
+
+		video_create_thumbnails($video);
 
 		$message = elgg_echo("video:saved");
 		system_message($message);

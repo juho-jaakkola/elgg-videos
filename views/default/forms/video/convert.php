@@ -20,11 +20,11 @@ $formats_input = elgg_view('input/dropdown', array(
 	'value' => $formats,
 ));
 
-$framesize_label = elgg_echo('video:resolution');
-$framesize_input = elgg_view('input/dropdown', array(
-	'name' => 'framesize',
-	'options_values' => video_get_framesize_options(),
-	'value' => $vars['entity']->framesize,
+$resolution_label = elgg_echo('video:resolution');
+$resolution_input = elgg_view('input/dropdown', array(
+	'name' => 'resolution',
+	'options_values' => video_get_resolution_options(),
+	'value' => $vars['entity']->resolution,
 ));
 
 $bitrate_label = elgg_echo('video:setting:label:bitrate');
@@ -46,8 +46,8 @@ echo <<<FORM
 	$formats_input
 </div>
 <div>
-	<label>$framesize_label</label>
-	$framesize_input
+	<label>$resolution_label</label>
+	$resolution_input
 </div>
 <div>
 	<label>$bitrate_label</label>
