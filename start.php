@@ -157,10 +157,10 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 				$source->conversion_done = true;
 				$source->save();
 
-				echo "<p>Successfully created video file $filename</p>";
+				echo "<p>Successfully created video file {$source->getFilename()}</p>";
 			} catch (Exception $e) {
 				// Print simple error to screen
-				echo "<p>Failed to create video file $filename</p>";
+				echo "<p>Failed to create video file {$source->getFilename()}</p>";
 
 				$success = false;
 
