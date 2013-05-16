@@ -87,6 +87,7 @@ Samasta formaatista voi esimerkiksi tehdä useita eri laatuja.</p>
 	'video:info' => 'Info',
 	'video:location' => 'Sijainti',
 	'video:size' => 'Koko',
+	'video:status' => 'Tila',
 	'video:pending' => 'Odottaa',
 
 	'video:admin:thumbnail_error' => 'Failed to create thumbnail(s) for the video %s. You may find more information in server error log.',

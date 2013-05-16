@@ -88,6 +88,7 @@ You can decide the format, resolution and bitrate for each version.</p>
 	'video:info' => 'Info',
 	'video:location' => 'Location',
 	'video:size' => 'Size',
+	'video:status' => 'Status',
 	'video:pending' => 'Pending',
 
 	'video:admin:thumbnail_error' => 'Failed to create thumbnail(s) for the video %s. You may find more information in server error log.',

@@ -43,7 +43,7 @@ $headers = array(
 	elgg_echo('video:resolution'),
 	elgg_echo('video:bitrate'),
 	elgg_echo('video:location'),
-	elgg_echo('status'),
+	elgg_echo('video:status'),
 	'',
 );
 
