@@ -27,6 +27,8 @@ $lang = array(
 	'video:saved' => 'Video tallennettu',
 	'video:deleted' => 'Video poistettu',
 	'video:thumbnail:success' => 'Luotiin uudet esikatselukuvat',
+	'video:error:invalid_position' => 'Syötit virheellisen sijainnin',
+	'video:error:thumbnail_creation_failed' => 'Esikatselukuvan luominen epäonnistui',
 
 	/**
 	 * Error messages

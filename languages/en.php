@@ -27,6 +27,8 @@ $lang = array(
 	'video:saved' => 'Video saved',
 	'video:deleted' => 'Video was successfully deleted.',
 	'video:thumbnail:success' => 'New thumbnails were successfully created',
+	'video:error:invalid_position' => 'You inserted an invalid position',
+	'video:error:thumbnail_creation_failed' => 'Failed to create a new thumbnail',
 
 	/**
 	 * Error messages
