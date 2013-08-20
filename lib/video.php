@@ -158,7 +158,7 @@ function video_get_page_contents_edit_thumbnail ($guid) {
 }
 
 /**
- * Disply individual's or group's videos
+ * Display individual's or group's videos
  */
 function video_get_page_contents_owner () {
 	// access check for closed groups
@@ -168,13 +168,13 @@ function video_get_page_contents_owner () {
 	if (!$owner) {
 		forward('video/all');
 	}
-	
+
 	elgg_push_breadcrumb($owner->name);
 
 	elgg_register_title_button();
 
 	$params = array();
-	
+
 	if ($owner->guid == elgg_get_logged_in_user_guid()) {
 		// user looking at own videos
 		$params['filter_context'] = 'mine';
@@ -186,9 +186,13 @@ function video_get_page_contents_owner () {
 		// group videos
 		$params['filter'] = '';
 	}
-	
-	$title = elgg_echo("video:user", array($owner->name));
-	
+
+	if (elgg_instanceof($owner, 'group')) {
+		$title = elgg_echo('video:group');
+	} else {
+		$title = elgg_echo("video:user", array($owner->name));
+	}
+
 	// List videos
 	$content = elgg_list_entities(array(
 		'types' => 'object',

@@ -37,6 +37,7 @@ function video_init () {
 	elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'video_icon_url_override');
 
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'video_entity_menu_setup');
+	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'video_owner_block_menu');
 
 	// Register cron hook
 	$period = elgg_get_plugin_setting('period', 'video');
@@ -44,6 +45,10 @@ function video_init () {
 
 	// Register an icon handler for video
 	elgg_register_page_handler('videothumb', 'video_icon_handler');
+
+	// Add group option
+	add_group_tool_option('video', elgg_echo('video:enablevideo'), true);
+	elgg_extend_view('groups/tool_latest', 'video/group_module');
 
 	elgg_register_admin_menu_item('administer', 'convert', 'video');
 	elgg_register_admin_menu_item('administer', 'flavors', 'video');
@@ -68,6 +73,15 @@ function video_page_handler ($page) {
 		case 'edit':
 			video_edit_menu_setup($page[1]);
 			$params = video_get_page_contents_edit($page[1]);
+			break;
+		case 'group':
+			$group = get_entity($page[1]);
+			if (!elgg_instanceof($group, 'group')) {
+				forward('', '404');
+			}
+			set_input('guid', $group->guid);
+
+			$params = video_get_page_contents_owner();
 			break;
 		case 'thumbnail':
 			video_edit_menu_setup($page[1]);
@@ -282,6 +296,31 @@ function video_entity_menu_setup($hook, $type, $return, $params) {
 			'priority' => 200,
 		);
 		$return[] = ElggMenuItem::factory($options);
+	}
+
+	return $return;
+}
+
+/**
+ * Add a menu item to an ownerblock
+ * 
+ * @param  string         $hook
+ * @param  string         $type
+ * @param  ElggMenuItem[] $return Array of ElggMenuItem objects
+ * @param  array          $params Menu parameters
+ * @return ElggMenuItem[] $return Array of ElggMenuItem objects
+ */
+function video_owner_block_menu($hook, $type, $return, $params) {
+	if (elgg_instanceof($params['entity'], 'user')) {
+		$url = "video/owner/{$params['entity']->username}";
+		$item = new ElggMenuItem('video', elgg_echo('video'), $url);
+		$return[] = $item;
+	} else {
+		if ($params['entity']->video_enable != "no") {
+			$url = "video/group/{$params['entity']->guid}/all";
+			$item = new ElggMenuItem('video', elgg_echo('video:group'), $url);
+			$return[] = $item;
+		}
 	}
 
 	return $return;
