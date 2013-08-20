@@ -83,6 +83,7 @@ function video_get_page_contents_upload () {
 	$params = array(
 		'title' => $title,
 		'content' => $form,
+		'filter' => '',
 	);
 
 	return $params;
