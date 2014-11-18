@@ -31,7 +31,7 @@ function video_init () {
 	$item = new ElggMenuItem('video', elgg_echo('video'), 'video/all');
 	elgg_register_menu_item('site', $item);
 
-	elgg_register_entity_url_handler('object', 'video', 'video_url_override');
+	elgg_register_plugin_hook_handler('entity:url', 'object', 'video_url_handler');
 	elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'video_icon_url_override');
 
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'video_entity_menu_setup');
@@ -101,13 +101,22 @@ function video_page_handler ($page) {
 /**
  * Populates the ->getUrl() method for video objects
  *
- * @param ElggEntity $entity Video entity
+ * @param string $hook   'entity:url'
+ * @param string $type   'object'
+ * @param string $url    Current URL
+ * @param array  $params Array containing the entity
  * @return string Video URL
  */
-function video_url_override($entity) {
-	$title = $entity->title;
-	$title = elgg_get_friendly_title($title);
-	return "video/view/" . $entity->getGUID() . "/" . $title;
+function video_url_handler($hook, $type, $url, $params) {
+	$entity = elgg_extract('entity', $params);
+
+	if (!$entity instanceof Video) {
+		return $url;
+	}
+
+	$title = elgg_get_friendly_title($entity->title);
+
+	return "video/view/{$entity->guid}/$title";
 }
 
 function video_edit_menu_setup($guid) {
