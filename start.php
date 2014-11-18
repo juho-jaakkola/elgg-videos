@@ -27,8 +27,6 @@ function video_init () {
 
 	elgg_register_page_handler('video', 'video_page_handler');
 
-	elgg_register_event_handler('pagesetup', 'system', 'video_page_setup');
-
 	// Site navigation
 	$item = new ElggMenuItem('video', elgg_echo('video'), 'video/all');
 	elgg_register_menu_item('site', $item);
