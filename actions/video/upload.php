@@ -161,4 +161,4 @@ if ($new_video) {
 	}
 
 	forward($video->getURL());
-}	
+}

@@ -10,10 +10,10 @@ if (empty($flavors)) {
 	foreach ($flavors as $key => $flavor) {
 		$flavors[$key][] = elgg_view('output/confirmlink', array(
 			'href' => "action/video/delete_flavor?id=$key",
-			'text' => elgg_echo('delete'), 
+			'text' => elgg_echo('delete'),
 		));
 	}
-	
+
 	$headers = array(
 		elgg_echo('video:format'),
 		elgg_echo('video:resolution'),

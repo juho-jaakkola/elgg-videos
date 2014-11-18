@@ -17,7 +17,7 @@ class VideoThumbnailer extends VideoShellAPI {
 
 	/**
 	 * Set position of frame in seconds or in format HH:MM:SS
-	 * 
+	 *
 	 * @param string $position
 	 */
 	public function setPosition ($position) {

@@ -89,7 +89,7 @@ class Video extends ElggFile {
 
 	/**
 	 * Return the file name without file extension
-	 * 
+	 *
 	 * If file store name is "video/1352994519movie.mov"
 	 * then the result will be "1352994519movie"
 	 *
@@ -134,7 +134,7 @@ class Video extends ElggFile {
 
 	/**
 	 * Get all VideoSource objects created of this video
-	 * 
+	 *
 	 * @param  array $options Options for the query
 	 * @return array $sources Array of VideoSource objects
 	 */
@@ -154,7 +154,7 @@ class Video extends ElggFile {
 
 	/**
 	 * Returns array of relative urls for all video sources
-	 * 
+	 *
 	 * @return array $sources
 	 */
 	public function getSourceUrls($options = array()) {

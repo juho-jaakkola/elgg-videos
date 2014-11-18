@@ -1,7 +1,7 @@
 <?php
 /**
  * Action for creating a new thumbnail for video
- * 
+ *
  * @package Video
  */
 

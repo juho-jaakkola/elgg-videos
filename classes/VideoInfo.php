@@ -14,7 +14,7 @@ class VideoInfo extends VideoShellAPI {
 
 	/**
 	 * Get video resolution on format 1920x1080
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getResolution() {
@@ -25,7 +25,7 @@ class VideoInfo extends VideoShellAPI {
 
 	/**
 	 * Get video duration in format HH:MM:SS
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getDuration() {
@@ -36,7 +36,7 @@ class VideoInfo extends VideoShellAPI {
 
 	/**
 	 * Get video bitrate in kilobits
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getBitrate() {

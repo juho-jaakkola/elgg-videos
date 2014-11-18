@@ -29,9 +29,9 @@ class VideoConverter extends VideoShellAPI {
 
 	/**
 	 * Set frame size (in format "320x240")
-	 * 
+	 *
 	 * If undefined or 0 the conversion uses the same resolution as the source
-	 * 
+	 *
 	 * @param string $size The resolution
 	 */
 	public function setResolution ($size) {
@@ -43,9 +43,9 @@ class VideoConverter extends VideoShellAPI {
 
 	/**
 	 * Set bitrate in kilobits
-	 * 
+	 *
 	 * If undefined the conversion uses the same bitrate as the source
-	 * 
+	 *
 	 * @param string $size The bitrate
 	 */
 	public function setBitrate ($bitrate) {

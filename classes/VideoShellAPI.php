@@ -74,7 +74,7 @@ class VideoShellAPI {
 
 	/**
 	 * Set path to input file
-	 * 
+	 *
 	 * @param string $inputfile Path to the file
 	 */
 	public function setInputfile ($inputfile) {
@@ -84,7 +84,7 @@ class VideoShellAPI {
 
 	/**
 	 * Set path to output file
-	 * 
+	 *
 	 * @param string $outputfile Path to the file
 	 */
 	public function setOutputFile ($outputfile) {
@@ -109,7 +109,7 @@ class VideoShellAPI {
 
 	/**
 	 * Get the error message printed to stderr
-	 * 
+	 *
 	 * @return string $error_message
 	 */
 	public function getError() {

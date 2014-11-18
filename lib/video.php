@@ -51,14 +51,14 @@ function video_get_page_contents_list ($container = 0) {
 		'full_view' => false,
 	);
 	$videos = elgg_list_entities($options);
-	
+
 	elgg_register_title_button();
-	
+
 	$params = array(
 		'title' => elgg_echo('video'),
 		'content' => $videos,
 	);
-	
+
 	return $params;
 }
 
@@ -205,9 +205,9 @@ function video_get_page_contents_owner () {
 	if (!$content) {
 		$content = elgg_echo("video:none");
 	}
-	
+
 	$sidebar = elgg_view('video/sidebar');
-	
+
 	$params['content'] = $content;
 	$params['title'] = $title;
 	$params['sidebar'] = $sidebar;
@@ -263,13 +263,13 @@ function video_get_page_contents_view ($guid = null) {
 		'title' => $title,
 		'filter' => '',
 	);
-	
+
 	return $params;
 }
 
 /**
  * Make thumbnails of given video position. Defaults to beginning of video.
- * 
+ *
  * @param Video $video    The video object
  * @param int   $position Video position
  */

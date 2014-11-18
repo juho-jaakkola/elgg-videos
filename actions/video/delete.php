@@ -1,7 +1,7 @@
 <?php
 /**
 * Delete video
-* 
+*
 * @package Video
 */
 

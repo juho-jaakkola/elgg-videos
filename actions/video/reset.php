@@ -1,7 +1,7 @@
 <?php
 /**
  * Remove all converted sources and mark video as unconverted.
- * 
+ *
  * This action is meant for administrators. It can be used when video
  * flavor configuration has changed and new sources need to be created.
  */

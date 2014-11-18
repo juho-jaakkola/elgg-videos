@@ -203,7 +203,7 @@ function video_conversion_cron($hook, $entity_type, $returnvalue, $params) {
 
 /**
  * Get video formats configured in plugin settings
- * 
+ *
  * @return null|array
  */
 function video_get_formats() {
@@ -303,7 +303,7 @@ function video_entity_menu_setup($hook, $type, $return, $params) {
 
 /**
  * Add a menu item to an ownerblock
- * 
+ *
  * @param  string         $hook
  * @param  string         $type
  * @param  ElggMenuItem[] $return Array of ElggMenuItem objects
@@ -357,7 +357,7 @@ function video_register_toggle() {
 
 /**
  * Return associative array of available video frame sizes.
- * 
+ *
  * @return array
  */
 function video_get_resolution_options() {
@@ -374,7 +374,7 @@ function video_get_resolution_options() {
 
 /**
  * Get video flavor settings
- * 
+ *
  * @return array $flavors
  */
 function video_get_flavor_settings () {
