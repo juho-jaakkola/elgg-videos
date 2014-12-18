@@ -21,7 +21,9 @@ elgg_make_sticky_form('video');
 
 // check if upload failed
 if (!empty($_FILES['upload']['name']) && $_FILES['upload']['error'] != 0) {
-	register_error(elgg_echo('video:cannotload'));
+	$error = elgg_get_friendly_upload_error($_FILES['upload']['error']);
+	register_error($error);
+
 	forward(REFERER);
 }
 
@@ -51,7 +53,7 @@ if ($new_video) {
 	// load original video object
 	$video = new Video($guid);
 	if (!$video) {
-		register_error(elgg_echo('video:cannotload'));
+		register_error(elgg_echo('video:notfound'));
 		forward(REFERER);
 	}
 

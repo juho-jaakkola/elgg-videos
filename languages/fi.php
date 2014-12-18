@@ -37,7 +37,6 @@ $lang = array(
 	 */
 	'video:notfound' => 'Videota ei löytynyt',
 	'video:noaccess' => "Sinulla ei ole oikeuksia tämän videon muokkaamiseen",
-	'video:cannotload' => "Videon lisäämisessä tapahtui virhe",
 	'video:nofile' => "Valitse lisättävä tiedosto",
 	'video:uploadfailed' => 'Videon tallentaminen epäonnistui.',
 	'video:thumbnail:error' => 'Yhden tai useamman esiatselukuvan luominen epäonnistui',

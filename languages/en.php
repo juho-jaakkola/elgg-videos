@@ -37,7 +37,6 @@ $lang = array(
 	 */
 	'video:notfound' => 'Video was not found',
 	'video:noaccess' => "You do not have permissions to edit this video",
-	'video:cannotload' => "There was an error uploading the video",
 	'video:nofile' => "You must select a file",
 	'video:uploadfailed' => 'The video could not be saved.',
 	'video:thumbnail:error' => 'Failed to create one or more thumbnails',
