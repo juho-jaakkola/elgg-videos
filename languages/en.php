@@ -16,7 +16,7 @@ $lang = array(
 	'video:nosupport' => 'Your browser does not support HTML5 videos. Please upgrade your browser.',
 	'video:thumbnail:position' => 'Image position in seconds',
 	'video:thumbnail:instructions' => 'Here you can define which image to use as video thumbnail. Either stop the video to the desired position or type the video position as seconds to the text box.',
-	'video:' => '',
+	'video:upload_limit' => 'Maximum allowed file size is %s',
 
 	'item:object:video' => 'Videos',
 	'item:object:video_source' => 'Video sources',

@@ -21,12 +21,22 @@ if ($guid) {
 } else {
 	$submit_label = elgg_echo('upload');
 }
+
+// Get post_max_size and upload_max_filesize
+$post_max_size = elgg_get_ini_setting_in_bytes('post_max_size');
+$upload_max_filesize = elgg_get_ini_setting_in_bytes('upload_max_filesize');
+
+// Determine the correct value
+$max_upload = $upload_max_filesize > $post_max_size ? $post_max_size : $upload_max_filesize;
+
+$upload_limit = elgg_echo('video:upload_limit', array(elgg_format_bytes($max_upload)));
 ?>
 
 <?php if (!$guid): ?>
 <div>
 	<label><?php echo elgg_echo("video:video"); ?></label><br />
 	<?php echo elgg_view('input/file', array('name' => 'upload')); ?>
+	<p class="elgg-text-help"><?php echo $upload_limit; ?></p>
 </div>
 <?php endif; ?>
 

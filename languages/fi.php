@@ -16,7 +16,7 @@ $lang = array(
 	'video:nosupport' => 'Selaimesi ei tue HTML5-videoita. Ole hyvä ja päivitä selain uudempaan versioon.',
 	'video:thumbnail:position' => 'Kuvan sijainti sekunteina',
 	'video:thumbnail:instructions' => 'Tällä sivulla voit valita videon esikatselukuvissa näytettävän kuvan. Valitse kuva joko pysäyttämällä video haluamaasi kohtaan tai syöttämällä haluamasi aika sekunteina suoraan tektikenttään.',
-	'video:' => '',
+	'video:upload_limit' => 'Suurin sallittu tiedostokoko: %s',
 
 	'item:object:video' => 'Videot',
 	'item:object:video_source' => 'Videomuunnokset',
