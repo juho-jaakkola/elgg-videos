@@ -6,7 +6,7 @@
  */
 
 // Get engine
-require_once(dirname(dirname(dirname(__FILE__))) . "/engine/start.php");
+require_once(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))) . "/engine/start.php");
 
 $guid = (int) get_input('guid', 0);
 $video_guid = (int) get_input('video_guid', 0);
