@@ -13,6 +13,7 @@ $defaults = array(
 	'poster' => '',
 	'controls' => 'controls',
 	'width' => '100%',
+	'preload' => 'metadata',
 );
 
 $vars = array_merge($defaults, $vars);
