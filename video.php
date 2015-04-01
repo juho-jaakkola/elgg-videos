@@ -17,7 +17,7 @@ if ($source && elgg_instanceof($source, 'object', 'video_source')) {
 	$file = $source->getFilenameOnFilestore();
 	$format = $source->format;
 } else {
-	// This allows to select a particular video qualirt
+	// This allows to select a particular video quality
 	$video = get_entity($video_guid);
 
 	if (!$video || $video->getSubtype() != "video") {
