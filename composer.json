@@ -1,0 +1,20 @@
+{
+	"name": "juho-jaakkola/elgg-videos",
+	"description": "Adds ability to upload and display videos on an Elgg site.",
+	"type": "elgg-plugin",
+	"keywords": [
+		"elgg",
+		"plugin"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Juho Jaakkola",
+			"email": "juho.a.jaakkola@gmail.com",
+			"role": "Developer"
+		}
+	],
+	"extra": {
+		"installer-name": "video"
+	}
+}
