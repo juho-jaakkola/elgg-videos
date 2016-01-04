@@ -5,9 +5,6 @@
  * @package Video
  */
 
-// Get engine
-require_once(dirname($_SERVER['SCRIPT_FILENAME']) . "/engine/start.php");
-
 // Get video GUID
 $video_guid = (int) get_input('video_guid', 0);
 
