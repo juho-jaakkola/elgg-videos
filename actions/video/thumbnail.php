@@ -23,7 +23,9 @@ if (!$position || !is_numeric($position)) {
 elgg_load_library('elgg:video');
 
 if (video_create_thumbnails($video, $position)) {
+	forward($video->getURL());
 	system_message(elgg_echo('video:thumbnail:success'));
 } else {
+	forward(REFERER);
 	register_error(elgg_echo('video:error:thumbnail_creation_failed'));
 }
