@@ -5,11 +5,6 @@ elgg_register_event_handler('init', 'system', 'video_init');
 function video_init () {
 	elgg_register_library('elgg:video', elgg_get_plugins_path() . 'video/lib/video.php');
 
-	// register thumbnailing JavaScript
-	$thumbnail_js = elgg_get_simplecache_url('js', 'video/thumbnailer');
-	elgg_register_simplecache_view('js/video/thumbnailer');
-	elgg_register_js('elgg.video.thumbnailer', $thumbnail_js);
-
 	$actionspath = elgg_get_plugins_path() . 'video/actions/video/';
 	elgg_register_action('video/upload', $actionspath . 'upload.php');
 	elgg_register_action('video/delete', $actionspath . 'delete.php');

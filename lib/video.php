@@ -135,7 +135,7 @@ function video_get_page_contents_edit_thumbnail ($guid) {
 		forward(REFERER);
 	}
 
-	elgg_load_js('elgg.video.thumbnailer');
+	elgg_require_js('video/thumbnailer');
 
 	$info_text = elgg_echo('video:thumbnail:instructions');
 	$info = "<p>$info_text</p>";
