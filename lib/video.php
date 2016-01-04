@@ -308,13 +308,6 @@ function video_create_thumbnails($video, $position = 0) {
 		return false;
 	}
 
-	// Save the master size image
-	$file = new ElggFile();
-	$file->owner_guid = $video->owner_guid;
-	$file->container_guid = $guid;
-	$file->setFilename("video/{$guid}/icon-{$name}.jpg");
-	$file->save();
-
 	$files = array();
 
 	// Create the thumbnails
