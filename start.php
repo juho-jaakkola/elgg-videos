@@ -32,6 +32,9 @@ function video_init () {
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'video_entity_menu_setup');
 	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'video_owner_block_menu');
 
+	// Make video objects likable
+	elgg_register_plugin_hook_handler('likes:is_likable', 'object:video', 'Elgg\Values::getTrue');
+
 	// Register cron hook
 	$period = elgg_get_plugin_setting('period', 'video');
 	elgg_register_plugin_hook_handler('cron', $period, 'video_conversion_cron');
