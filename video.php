@@ -5,14 +5,9 @@
  * @package ElggVideo
  */
 
-$root = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME'])));
+require_once(dirname(dirname(__DIR__)) . '/vendor/autoload.php');
 
-// Get engine
-if (file_exists($root . "/engine/start.php")) {
-	require_once($root . "/engine/start.php");
-} else {
-	require_once($root . "/vendor/elgg/elgg/engine/start.php");
-}
+\Elgg\Application::start();
 
 $guid = (int) get_input('guid', 0);
 $video_guid = (int) get_input('video_guid', 0);
